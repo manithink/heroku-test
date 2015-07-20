@@ -1,0 +1,87 @@
+/************* for accordian ****************/
+.accordian-list {	
+	display:block;
+	clear: both;
+}
+.accordian-head {
+	padding: 10px;
+	cursor: pointer;
+	position: relative;
+	margin-bottom:2px;
+	background-color:#c8ecff;
+	color:#37454c;
+	font-size:16px;
+	overflow:hidden;
+	padding-right:47px;
+}
+.accordian-head.active{
+	margin-bottom:0;
+}
+.accordian-head .arrow{
+	background: asset_url("down.png") center no-repeat;
+	position:absolute;
+	right:0;
+	top:0;
+	/*height:39px;*/
+	height:100%;
+	width:37px;
+	border-left:1px solid #b7ddf2;
+}
+.accordian-head .delete-accordian{
+	background:asset_url("delete-accordian.png") center no-repeat;
+	right:38px;
+	top:0;
+	height:39px;
+	width:37px;
+	border-left:1px solid #b7ddf2;
+	position:absolute;
+}	
+.accordian-head.active .arrow{
+	background: asset_url("up.png") center no-repeat;
+}
+.accordian-body {
+	display:none;
+	margin-bottom:2px;
+	border-width:0 1px 1px 1px;
+	border-color:#c8ecff;
+	border-style:solid;
+	font-size: 13px;
+}
+.accordian-body li{
+	padding:12px 8px;
+	color:#676767;
+	font-size:13px;
+	border-bottom:1px solid #e6e6e6;
+	position:relative;
+	overflow:hidden;
+}
+.delete-sub{
+	background:asset_url("delete-sub.png") center no-repeat;
+	position:absolute;
+	height:40px;
+	width:36px;
+	right: 0;
+	top: 0;
+	border-left:1px solid #e6e6e6;
+	cursor:pointer;
+}	
+.accordian-body li.last{
+	border-bottom:0;
+}
+.add-service, .new-category, .assign-new-catgry{
+	float: left;
+	width: 193px;
+	margin: 0 0 0 10px;
+	font-size: 18px;
+	padding: 8px 0;
+	text-align: center;
+}
+.add-service-inpt{
+	float:left;
+}
+.new-category-section input[type="text"]{
+	width: 163px;
+	float:left;
+}
+	
+	

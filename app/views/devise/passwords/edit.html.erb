@@ -1,0 +1,36 @@
+<div id="outer-wrapper">
+  <h1 id="login-logo"><%= image_tag "devise-logo.png", :width => "141", :height => "60"%></h1>
+  <div id="login-wrapper">
+    <div id="login-cnt">
+      <h2>Change your password</h2>
+
+      <div id="login_error">
+  		  <%= devise_error_messages! %>
+      </div>
+      <%= simple_form_for(resource, :as => resource_name, :url => password_path(resource_name),:validate => false, :html => { :method => :put, :id => 'password_reset' }) do |f| %>
+      	<%= f.hidden_field :reset_password_token %>
+        <div class="row-box">
+          <%= f.password_field :password, :autofocus => true, placeholder: "New password" %>
+        </div>
+
+        <div class="row-box">
+          <%= f.password_field :password_confirmation, placeholder: "Confirm password" %>
+        </div>
+
+        <div class="row-box">
+        	<%= f.submit "Change my password", :class => "farCare-btn login" %>
+        </div>
+
+      <% end %>
+      
+      <div class="login-btm-bg">
+        <%= image_tag "login-btm-bg.png", :width => "391", :height => "6" %>
+      </div>
+    </div>
+  </div>
+  <div id="login-footer">
+    <p>©2014 HomaCare All rights reserved</p>
+  </div>
+</div>
+
+

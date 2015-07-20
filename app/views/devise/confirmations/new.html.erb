@@ -1,0 +1,20 @@
+<div id="outer-wrapper">
+  <h1 id="login-logo"><%= image_tag "devise-logo.png", :width => "141", :height => "60"%></h1>
+  <div id="login-wrapper">
+    <div id="login-cnt" class="success-msg">
+      <div class="row-box center">
+        <%= image_tag "Invalid.png", :width => "43", :height => "42"%>
+      </div><h2 class="invalid">Invalid Confirmation Token!</h2>
+
+      <div class="row-box center pad-btm-0">
+       <!-- <input type="button" value="Back to home" class="farCare-btn back-to-home" /> -->
+       <%= link_to "Back to home", web_root_path , class: "farCare-btn back-to-home " %>
+     </div>
+     <div class="login-btm-bg"><%= image_tag "success-btm.png", :width => "595", :height => "7"%></div>
+   </div>
+ </div>
+
+ <div id="login-footer">
+  <p>©2014 HomaCare All rights reserved</p>
+</div>
+</div>

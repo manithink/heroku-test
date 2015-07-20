@@ -1,0 +1,9 @@
+<% if current_user.has_role? :admin %>
+    	<%= render "shared/admin_top_navigation" %>
+<% elsif current_user.has_role? :pcga %>
+    	<%= render "shared/pcga_top_navigation" %>
+<% elsif current_user.has_role? :pcg %>
+    	<%= render "shared/pcg_top_navigation" %>
+<% elsif current_user.has_role? :fcg %>
+    	<%= render "shared/fcg_top_navigation" %>
+<% end %>

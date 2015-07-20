@@ -1,0 +1,80 @@
+	<div class="breadcrum">
+		<ul>
+			<li><%= link_to "Home",pcg_home_index_path, :id => "pcg_breadcrum_link" %></li>
+			<li class="greater-than"><%= image_tag "greater-than.png", :width => "4", :height => "7" %></li>
+			<li>Invite Family</li>
+		</ul>
+	</div>
+
+	<h3 class="clear">Invite Families to Join Care Giving Services</h3>
+	<div class="inputs">
+		<div class="invite-family">
+
+			<%= form_tag('/pcga/send_email_invite_family', method: :post) do %>
+
+				<div class="row">
+					<p>Email <span class="mandatory">*</span><span id = "invitation_email_label" style="color:red; padding-left:20px;"></span></p>
+					<%= text_field_tag :emails,nil, class: "email_box" %>
+				</div>
+
+				<div class="row h-btm">
+					<p>Description</p>
+					<%= text_area_tag :content,nil, class: "content_box", maxlength: 999 %>
+					<span class="character-lmt">1000 characters left</span>
+				</div>
+
+				<div class="row">
+				<p class="footer-note"><span class="mandatory">*</span> Mandatory fields</p>
+					<%= submit_tag "Send", class: "farCare-btn invitation" %>
+					<%= link_to (button_tag "Cancel",:type => 'button',:class => "farCare-btn cancel"), pcg_home_index_path, :id => "pcg_invite_cancel" %>
+				</div>
+
+			<% end %>
+
+		</div>
+	</div>
+
+
+<script>
+
+ $(function(){
+
+ 		$('.invitation').click(function(event){
+
+			if ($('.email_box').val() == ""){
+				$('#invitation_email_label').html("can't be blank")
+					event.preventDefault();
+			}
+			else{
+				if((validateEmail( ($('.email_box').val() ) ))){
+					event.preventDefault();
+				}
+			}
+
+		});
+
+		$('.content_box').keypress(function() {
+	    var max = 1000;
+	    var textLen = $(this).val().length;
+	    var textLeft = max - (textLen+1);
+	    $('.character-lmt').text(
+	      textLeft + ' character' + (textLeft == 1 ? '' : 's') + ' left'
+	    );
+		});
+
+  });
+
+ 	function validateEmail(email) {
+ 		var emails = email.split(",");
+ 		var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+ 		var status = false;
+ 		emails.forEach(function (email) {
+ 			if (!(re.test(email.trim()))){
+ 				status = true;
+ 				$('#invitation_email_label').html("invalid email");
+			}
+		});
+		return status;
+	}
+
+</script>

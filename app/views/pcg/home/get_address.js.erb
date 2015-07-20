@@ -1,0 +1,5 @@
+$("#mr_name").html("Address of <%= @care_client.medical_record_number%>")
+$("#content_mr").html("<p><%= @care_client.address_1%></p><p><%= @care_client.address_2%></p>"
+										+"<p><%= @care_client.city%></p><p><%= @care_client.state.name%></p>"
+										+"<p>mob: <%= @care_client.mobile_no%></p>")
+loadPopup();

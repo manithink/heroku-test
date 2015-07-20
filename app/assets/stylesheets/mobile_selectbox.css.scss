@@ -1,0 +1,82 @@
+/*********************** selectbox*************************/
+.select-wrapper {
+	float: left;
+	display: inline-block;
+	border:1px solid #d6d6d6;
+	background: asset_url("dropdown-arrow.png") no-repeat 96% center;
+	cursor: pointer;
+	font-family: 'verdanaregular';
+	position: relative;
+}
+.select-wrapper {
+	padding:10px 18px;
+}
+/*.select-wrapper:hover {
+	background: asset_url("dropdown-arrow-hover.png") no-repeat 96% center;
+	border-color: #ace2ec;
+}*/
+.select-wrapper .holder {
+	display: block;
+	margin: 0 30px 0 0;
+	white-space: nowrap;
+	overflow: hidden;
+	cursor: pointer;
+	/*position: relative;*/
+		z-index: -1;
+	min-height:17px;
+}
+.select-wrapper select {
+	margin: 0;
+	position: absolute;
+	z-index: 2;
+	cursor: pointer;
+	outline: none;
+	opacity: 0;
+	/* CSS hacks for older browsers */
+	_noFocusLine: expression(this.hideFocus=true);
+	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+	filter: alpha(opacity=0);
+	-khtml-opacity: 0;
+	-moz-opacity: 0;
+	width: 254px;
+	padding-bottom:6px;
+}
+/******* new added styles*****/
+.inputs .select-wrapper, .choose-cmpny .select-wrapper, .register-now .select-wrapper, .care-tracker-reminder .select-wrapper{
+	width:100%;
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	box-sizing: border-box;         /* Opera/IE 8+ */
+	padding-left:0;
+}
+.inputs .select-wrapper{
+	margin-top:10px;
+}	
+.inputs .select-wrapper select{
+	width:100%;
+}
+.choose-cmpny .select-wrapper select{
+	width:261px;
+}
+.inputs .select-wrapper .holder, .choose-cmpny .select-wrapper .holder, .register-now .select-wrapper .holder, .care-tracker-reminder .select-wrapper .holder{
+	padding-left:18px;
+}
+.care-tracker-reminder .select-wrapper{
+	width:97px;
+	background-position-x:80%;
+}
+.care-tracker-reminder .select-wrapper select{
+	width:97px;
+}
+.care-tracker-reminder .select-wrapper .holder{
+	margin-right:10px;
+}
+.reminder .select-wrapper select{
+	width: 105px;
+}
+.reminder .select-wrapper{
+	background-position: 90% center;
+}
+.reminder .select-wrapper .holder{
+	margin: 0 10px 0 0;
+}

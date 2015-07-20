@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <div style="display: table;margin: 0 auto;background-color:#fff;border:1px solid #e4e4e4;width:550px;" align="center"> 
+      <center style="padding: 20px 0px"><%= image_tag attachments['logo.png'].url, style: "max-height:49px;max-width:116px;", alt: "login" %></center>
+      <table bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:25px;"> 
+        <tr align="center" valign="top" bgcolor="#26a7e9">
+          <th style="background-color: #26a7e9;font-weight: normal;font-size: 22px;padding:15px 20px;color:#fff;font-family:arial;" width="50%" colspan="2">Welcome to HomaCare</th>
+        </tr>
+        <tr align="center" valign="top" style="background-color:#f7f7f7;">
+          <p> <strong><%= @user %></strong> has invited you to HomaCare.</p>
+          <p>Register to the site, just follow this link: <%= @url %>.</p>
+        </tr>
+        <tr align="center" valign="top" style="background-color:#f7f7f7;">
+          <p> <%= @content %></p>
+          <p>Thanks and have a great day!</p>
+        </tr>
+      </table>
+    </div>
+    <center><div id="footer"><p style="color:#a6a6a6;font-size:12px;font-family:arial;">&copy;2014 HomaCare All rights reserved</p></div></center>
+  </body>
+</html>

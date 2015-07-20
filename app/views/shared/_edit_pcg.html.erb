@@ -1,0 +1,287 @@
+<script type="text/javascript">
+    $(document).ready(function(){
+      $(".edit").hide();
+      $( "#edit-pcgc" ).click(function() {
+        $('#state').val('<%= @care_giver_current.state.id %>');
+        $(".input-hide-show .inpt").css("display","block");
+        $(".hidden-block").css("display","block");
+        $(".input-hide-show .select-wrapper").css("display","block");
+        $(".input-hide-show .mandatory").css("display","inline-block");
+        $(".input-hide-show .spn-txt").css("display","none");
+        $(".display-block").css("display","none");
+        $(".input-hide-show .inputs .row").css("padding-bottom","20px");
+        $(".edit").show();
+        $(".view").hide();
+        $('#edit_care_giver').resetClientSideValidations();
+      });
+    })
+</script>
+
+
+
+
+  <%= simple_form_for(@care_giver_current,:url => pcg_home_path,method: :patch, :validate => true, html: {id: 'edit_care_giver'}) do |f| %>
+  <h4>Personal Details</h4>
+  <div class="inputs">
+    <div class="row">
+      <div class="first-input-box">
+        <p>First Name <span class="mandatory">*</span></p>
+        <span class="spn-txt"><%= @care_giver_current.first_name %></span>
+        <%= f.text_field :first_name, :class => "inpt" %>
+      </div>
+      <div class="input-box">
+        <p>Last Name <span class="mandatory">*</span></p>
+        <span class="spn-txt"><%= @care_giver_current.last_name %></span>
+        <%= f.text_field :last_name, :class => "inpt" %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="first-input-box">
+        <p>Home Address 1 <span class="mandatory">*</span></p>
+        <span class="spn-txt"><%= @care_giver_current.address_1 %></span>
+        <%= f.text_field :address_1, :class => "inpt" %>
+      </div>
+      <div class="input-box">
+        <p>Home Address 2 </p>
+        <span class="spn-txt"><%= @care_giver_current.address_2 %></span>
+        <%= f.text_field :address_2, :class => "inpt" %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="first-input-box">
+        <p>Country <span class="mandatory">*</span></p>
+        <span class="spn-txt"><%= @care_giver_current.country.name %></span>
+        <%= f.select(:country_id, Country.all.collect {|a| [a.name, a.id]}, {:include_blank => "Please select"},{class: "custom-select country", :id => "country"}) %>
+      </div>
+      <div class="input-box">
+        <p>State <span class="mandatory">*</span></p>
+        <span class="spn-txt"><%= @care_giver_current.state.name %></span>
+        <%= f.select(:state_id, State.all.collect {|a| [a.name, a.id]}, {:include_blank => "Please select"},{class: "custom-select", :id => "state"}) %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="first-input-box">
+        <p>City<span class="mandatory">*</span></p>
+        <span class="spn-txt"><%= @care_giver_current.city %></span>
+        <%= f.text_field :city, :class => "inpt" %>
+      </div>
+      <div class="input-box">
+        <p>Zip /Postal Code <span class="mandatory">*</span></p>
+        <span class="spn-txt"><%= @care_giver_current.zip %></span>
+        <%= f.text_field :zip, :class => "inpt" %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="first-input-box">
+        <p>Mobile No. <span class="mandatory">*</span></p>
+        <span class="spn-txt"><%= @care_giver_current.mobile_no %></span>
+        <%= f.text_field :mobile_no, :class => "inpt", :title => "Please enter phone number (including country code) with no spaces or hyphens. e.g. '+19057076666'" %>
+      </div>
+      <div class="input-box">
+        <p>Alternative No.</p>
+        <span class="spn-txt"><%= @care_giver_current.alternative_no %></span>
+        <%= f.text_field :alternative_no, :class => "inpt", :title => "Please enter phone number (including country code) with no spaces or hyphens. e.g. '+19057076666'" %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="first-input-box">
+        <p>Email </p>
+        <span class="spn-txt"><%= @care_giver_current.user.email %></span>
+        <%= f.text_field :email, :value => @care_giver_current.user.email,  :class => "inpt", :disabled => true%>
+      </div>
+      <div class="input-box">
+        <p>Gender <span class="mandatory">*</span></p>
+          <span class="spn-txt"><%= @care_giver_current.gender %></span>
+        <fieldset class="radios hidden-block">
+        <label class="label_radio">
+          <%= f.radio_button :gender, 'Male', :checked => true %>
+          Male</label>
+        <label class="label_radio">
+          <%= f.radio_button :gender, 'Female' %>
+          Female</label>
+      </fieldset>
+      </div>
+    </div>
+
+    <div class="row h-btm">
+      <div class="first-input-box">
+        <p>Date of Birth <span class="mandatory">*</span></p>
+        <span class="spn-txt"><%= @care_giver_current.dob.strftime("%m-%d-%Y") %></span>
+        <%= f.text_field :dob, :class => "inpt", :id => "datepicker", readonly: true, value: f.object.dob.strftime("%m-%d-%Y") %>
+      </div>
+      <div class="input-box">
+        <p>Telephony Id </p>
+        <span class="spn-txt"><%= @care_giver_current.telephony_id %></span>
+        <%= f.text_field :telephony_id, :class => "inpt" %>
+      </div>
+    </div>
+</div>
+
+<h4>Professional Details</h4>
+<div class="inputs">
+    <div class="row">
+      <div class="first-input-box">
+        <p>Highest Education </p>
+        <span class="spn-txt"><%= @care_giver_current.highest_education %></span>
+        <%= f.text_field :highest_education, :class => "inpt" %>
+      </div>
+      <div class="input-box">
+        <p>School year Graduated</p>
+        <span class="spn-txt"><%= @care_giver_current.school_year_graduated %></span>
+        <%= f.select :school_year_graduated,(1950..Time.now.year).to_a.reverse,{:include_blank =>"Please select"},{:class => "custom-select inpt", :id => "school_year_graduated"} %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="first-input-box">
+        <p>College Name </p>
+        <span class="spn-txt"><%= @care_giver_current.college_name %></span>
+        <%= f.text_field :college_name, :class => "inpt" %>
+      </div>
+      <div class="input-box">
+        <p>Year Graduated </p>
+        <span class="spn-txt"><%= @care_giver_current.year_graduated %></span>
+        <%= f.select :year_graduated,(1950..Time.now.year).to_a.reverse,{:include_blank =>"Please select"},{:class => "custom-select inpt", :id => "year_graduated"} %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="first-input-box">
+        <p>Degree/Certificate </p>
+        <span class="spn-txt"><%= @care_giver_current.certificates %></span>
+        <%= f.text_area :certificates, :class => "inpt" %>
+      </div>
+      <div class="input-box">
+        <p>Certification/Training </p>
+        <span class="spn-txt"><%= @care_giver_current.training %></span>
+        <%= f.text_area :training, :class => "inpt" %>
+      </div>
+    </div>
+
+    <div class="row h-btm">
+      <div class="first-input-box">
+        <p>Active Since </p>
+        <span class="spn-txt"><%= @care_giver_current.active_since %></span>
+        <%= f.text_field :active_since, :class => "inpt", :disabled => true %>
+      </div>
+    </div>
+  </div>
+
+
+  <h4>Emergency Details</h4>
+  <div class="inputs">
+    <div class="row">
+      <div class="first-input-box">
+        <p>First Name </p>
+        <span class="spn-txt"><%= @care_giver_current.emergency_first_name %></span>
+        <%= f.text_field :emergency_first_name, :class => "inpt" %>
+      </div>
+      <div class="input-box">
+        <p>Last Name</p>
+        <span class="spn-txt"><%= @care_giver_current.emergency_last_name %></span>
+        <%= f.text_field :emergency_last_name, :class => "inpt" %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="first-input-box">
+        <p>Phone No. 1 </p>
+        <span class="spn-txt"><%= @care_giver_current.emergency_phone_no1 %></span>
+        <%= f.text_field :emergency_phone_no1, :class => "inpt", :title => "Please enter phone number (including country code) with no spaces or hyphens. e.g. '+19057076666'" %>
+      </div>
+      <div class="input-box">
+        <p>Phone No. 2</p>
+        <span class="spn-txt"><%= @care_giver_current.emergency_phone_no2 %></span>
+        <%= f.text_field :emergency_phone_no2, :class => "inpt", :title => "Please enter phone number (including country code) with no spaces or hyphens. e.g. '+19057076666'" %>
+      </div>
+    </div>
+
+    <div class="row h-btm">
+        <p style="width:175px;">Notes </p>
+        <span class="spn-txt"><%= @care_giver_current.emergency_notes %></span>
+        <%= f.text_area :emergency_notes, :class => "inpt" %>
+    </div>
+  </div>
+  <div class="row hidden-block">
+  <p class="footer-note"><span class="mandatory">*</span> Mandatory fields</p>
+    <%= f.submit "Submit", value: "Submit", class: "farCare-btn submit first-btn" %>
+    <% end %>
+
+
+<script type="text/javascript">
+
+  $(function(){
+
+    get_states($('.country').val());
+    $("#pcg_last_name").change(function(e){
+      var id = $(this).val();
+      if (id != null){
+      document.location.href='/pcg/home/'+ id +'/edit';
+    }
+    });
+
+  });
+
+
+  $('#country').focusout(function(){
+    validation("#country")
+  });
+  $('#state').focusout(function(){
+    validation("#state")
+  });
+  $('#school_year_graduated').focusout(function(){
+    validation("#school_year_graduated")
+  });
+  $('.submit').click(function(){
+    validation_submit("#country")
+    validation_submit("#state")
+    validation_submit("#school_year_graduated")
+  });
+
+
+  function validation(class_name){
+    if ($(class_name).val() == ''){
+      $(class_name).parent().next().hide();
+      $(class_name).parent().next().next().remove();
+    }
+  }
+  function validation_submit(class_name_submit){
+    if ($(class_name_submit).val() == ''){
+      $(class_name_submit).parent().next().show();
+      $(class_name_submit).parent().next().next().remove();
+    }
+  }
+
+  $(function() {
+    $("#datepicker").datepicker({
+      onClose: function(dateText, inst) { $(inst.input).change().focusout(); },
+      changeMonth: true,
+      changeYear: true,
+      dateFormat: 'mm-dd-yy',
+      maxDate : new Date(),
+      yearRange: "-100:+0",
+      showMonthAfterYear : true
+    });
+  });
+
+
+  $('.country').change(function(){
+      get_states($('.country').val());
+      $('#state').next().html('Please select');
+    });
+
+  function get_states (value) {
+    $.ajax({
+      type: "POST",
+      dataType: "script",
+      url: '/pcg/home/get_state_list',
+      data: {country: value}
+    });
+  }
+
+</script>

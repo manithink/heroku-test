@@ -1,0 +1,58 @@
+<div class="calender-pop-cnt"><%= vacation.reason %></div>
+<!-- <div class="calender-alert">PCGs are not available!!</div><br> -->
+<%= form_for :vacation, url: update_vacation_request_calendar_care_giver_path, html: { class: "manage-request-submit", id: "event_form" } do |f| %>
+  <fieldset class="radios vaccation">
+    <label class="label_radio r_on">
+    <%= f.radio_button :status, 'accepted' %>
+    Accept</label>
+    <label class="label_radio">
+    <%= f.radio_button :status, 'rejected' %>
+    Reject</label>
+   </fieldset>
+   <p>
+    <%=f.label :comments %>
+    <%=f.text_area :comments, :rows => 4, :cols => 30 %>
+  </p>
+   <%= f.hidden_field :vacation_id, value: vacation.id %>
+  <%= f.submit 'Submit', class: "farCare-btn submit first-btn vaccation-btn" , id: "manage-submit"%>
+  <span id = "creating_events" class="spinner" style = "display:none;">Updating, Please wait...</span>
+<% end %>
+
+
+<script>
+  $(function(){
+    setupLabel();
+  });
+  $('.label_check, .label_radio').click(function(){
+      setupLabel();
+  });
+        
+  function setupLabel() {
+    if ($('.label_radio input').length) {
+          $('.label_radio').each(function(){
+              $(this).removeClass('r_on');
+          });
+          $('.label_radio input:checked').each(function(){
+              $(this).parent('label').addClass('r_on');
+          });
+    }
+  };
+
+  $('#manage-submit').click(function(event){
+    if($('input:radio:checked').length > 0){      
+      event.preventDefault();
+      jConfirm('Do you want to continue?','Confirmation', function(c){
+          if(c){
+            $('.manage-request-submit').submit();
+          }else
+          {
+            return false;
+          }
+        })
+    }else{
+       jAlert('warning','Please choose any option!', 'Warning');
+       return false;
+    }
+  });
+</script>
+

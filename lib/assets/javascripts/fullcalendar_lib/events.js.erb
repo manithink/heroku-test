@@ -1,0 +1,73 @@
+// Place all the behaviors and hooks related to the matching controller here.
+// All this logic will automatically be available in application.js.
+
+full_calendar_options = <%= APP_CONFIG.to_json.html_safe %>
+// app_path              = "http://localhost:3001/fullcalendar_engine/demo" //"<%#= FullcalendarEngine::Configuration["mount_path"] %>"
+
+$.extend(full_calendar_options, {
+  loading: function(bool){
+    if (bool)
+      $('#loading').show();
+    else
+      $('#loading').hide();
+  },
+  eventDrop: function(event, dayDelta, minuteDelta, allDay, revertFunc){
+    FullcalendarEngine.Events.move(event, dayDelta, minuteDelta, allDay, revertFunc);
+  },
+  eventResize: function(event, dayDelta, minuteDelta, revertFunc){
+    FullcalendarEngine.Events.resize(event, dayDelta, minuteDelta, revertFunc);
+  },
+  eventClick: function(event, jsEvent, view){
+    FullcalendarEngine.Events.showEventDetails(event);
+  },
+  eventDragStart: function( event, jsEvent, ui, view ) {
+    FullcalendarEngine.Events.startDragResize();
+  },
+  eventDragStop: function( event, jsEvent, ui, view ) {
+    FullcalendarEngine.Events.stopDragResize();
+  },
+  eventResizeStart: function( event, jsEvent, ui, view ) {
+    FullcalendarEngine.Events.startDragResize();
+  },
+  eventResizeStop: function( event, jsEvent, ui, view ) {
+    FullcalendarEngine.Events.stopDragResize();
+  },
+  select: function( startDate, endDate, allDay, jsEvent, view ) {
+    FullcalendarEngine.Form.display({
+      starttime: new Date(startDate.getTime()),
+      endtime:   new Date(endDate.getTime()),
+      allDay:    allDay
+    })
+  }
+})
+
+
+$(document).ready(function(){
+  $('#create_event_dialog, #event_desc_dialog').on('submit', "#event_form", function(event) {
+    var $spinner = $('.spinner');
+    event.preventDefault();
+    $.ajax({
+      type: "POST",
+      data: $(this).serialize(),
+      url: $(this).attr('action'),
+      beforeSend: show_spinner,
+      complete: hide_spinner,
+      success: FullcalendarEngine.Events.refetch_events_and_close_dialog,
+      error: handle_error
+    });
+
+    function show_spinner() {
+      $spinner.show();
+    }
+
+    function hide_spinner() {
+      $spinner.hide();
+    }
+
+    function handle_error(xhr) {
+      jAlert('warning', xhr.responseText, 'Warning');
+
+      // alert(xhr.responseText);
+    }
+  })
+});

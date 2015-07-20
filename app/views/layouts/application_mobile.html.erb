@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]> <html lang="en" class="ie6 legacy-ie"> <![endif]-->
+<!--[if IE 7 ]>    <html lang="en" class="ie7 legacy-ie"> <![endif]-->
+<!--[if IE 8 ]>    <html lang="en" class="ie8 legacy-ie"> <![endif]-->
+<!--[if IE 9 ]>    <html lang="en" class="ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!-->
+<html lang="en">
+<!--<![endif]-->
+<head>
+
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+	<%= favicon_link_tag('favicon.ico')%>
+	<title>Mobile HomaCare</title>
+	<meta name="" />
+	<%= stylesheet_link_tag  "mobile_application", media: "all", "data-turbolinks-track" => true %>
+	<%= javascript_include_tag "mobile_application", "data-turbolinks-track" => true %>
+	<%= csrf_meta_tags %>
+</head>
+
+<body>
+		<%= yield %>
+		  <footer>
+  <p>&copy;2014 HomaCare All rights reserved</p>
+	</footer>
+	</div>
+</body>
+</html>

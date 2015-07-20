@@ -1,0 +1,11 @@
+# Set default behavior for CRLF mismatch between OS's.
+# Will override user auto.crlf settings for consistent behavior across users
+# Precludes the need to set it in .git/config
+* text=auto
+
+# Binary files that should be left untouched
+*.jar binary
+*.ico binary
+*.png binary
+*.jpg binary
+

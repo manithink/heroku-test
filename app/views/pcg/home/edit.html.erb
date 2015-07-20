@@ -1,0 +1,33 @@
+  
+
+  <div class="breadcrum">
+    <ul>
+      <%= pcg_bread_crumbs %>
+      <li class="greater-than"><%= image_tag "greater-than.png", :width => "4", :height => "7" %></li>
+      <li class="edit"><%= link_to "View Details",edit_pcg_home_path(@care_giver_current.id), :class => "confirm", :id => "pcg_edit_view_breadcrum_link" %>
+      <li class="greater-than edit"><%= image_tag "greater-than.png", :width => "4", :height => "7" %></li>
+      <li class="edit" >Edit <%= change_name("pcg")%></li>
+      <li class="view">View Details</li>
+    </ul>
+  </div>
+
+
+
+  <div class="display-block">
+    <h3 class="clear relative m_btm-15">View Details
+    <input type="button" value="Edit <%= change_name("pcg")%>" id="edit-pcgc" class="edit-pcgc farCare-btn"></h3>
+    <div class="row">
+    <% unless current_user.has_role? :admin or current_user.has_role? :pcg %>
+    	<div class="choose-cmpny">
+        <%= select_tag 'last_name', options_for_select(@care_giver.collect{ |u| [u.first_name+" "+u.last_name, u.id]},@care_giver_current.id),:class => "custom-select", :id => "pcg_last_name" %>
+      </div>
+      <% end %>
+    </div>
+  </div>
+
+  <h3 class="clear hidden-block">Edit <%= change_name("pcg")%></h3>
+  <div class="input-hide-show">
+  <%= render "shared/edit_pcg" %>
+  <%= link_to (button_tag "Cancel",:type => 'button',:class => "farCare-btn cancel"), edit_pcg_home_path(@care_giver_current.id), :id => "pcg_edit_cancel" %>
+  </div>
+  </div>

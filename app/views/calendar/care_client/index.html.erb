@@ -1,0 +1,369 @@
+
+<% content_for :calendar_libraries do %>
+<%= stylesheet_link_tag    "fullcalendar_lib", media: "all", "data-turbolinks-track" => true %>
+<% end %>
+
+
+<%= javascript_include_tag "fullcalendar_lib", "data-turbolinks-track" => true %>
+<div id="main-outer-wrapper">
+  <div id="content-block">
+    <div class="breadcrum">
+      <ul>
+        <li><%= link_to "Home",pcga_home_index_path %></li>
+        <li class="greater-than"><%= image_tag "greater-than.png", width: "4", height: "7" %></li>
+        <li><%= link_to "Care Clients",fcg_view_care_clients_path %></li>
+        <li class="greater-than"><%= image_tag "greater-than.png", :width => "4", :height => "7" %></li>
+        <li>Client Calendar</li>
+      </ul>
+    </div>
+    <h3 class="clear">Client Calendar <span class="name">(<%= @care_client.fullname %>)</span>
+      <a onclick="autoSchedule.schedule.scheduleNow()" class="assign-pcg farCare-btn <%= @care_client.status%>", id='Add-PCGC'>Auto Assign <%= change_name("pcg")%></a>
+      <span class="choose-cmpny inner">
+         <%= select_tag "calendar_switch_care_client", options_for_select(@care_clients.collect{|x| [x.fullname, x.id] }, params[:id]), class: "custom-select-box", title: "Switch Calendar" %>
+      </span>
+    </h3>
+    <div>
+      <div class='calendar'></div>
+    </div>
+  </div>
+</div>
+<div id="event_desc_dialog" class="dialog" style="display:none;"></div>
+<div id="create_event_dialog" class="dialog" style ="display:none;">
+  <%= render 'form' %>
+</div>
+
+<script>
+  $(document).ready(function(){
+
+    var is_darg_or_resize = false;
+
+    full_calendar_options['events'] = "<%= get_services_calendar_care_client_path(@care_client) %>"
+    console.log(full_calendar_options);
+
+
+    var auto_refresh = setInterval(
+            function(){
+              if(!is_darg_or_resize){
+                $('.calendar').fullCalendar('refetchEvents');
+              }
+            }, 10000);
+
+    $('.calendar').fullCalendar(full_calendar_options);
+
+    <% if params["year"] && params["month"] && params["day"] %>
+      $('.calendar').fullCalendar( 'gotoDate', <%= params["year"] %>, <%= params["month"] %>, <%= params["day"] %>);
+    <% end %>
+
+
+    if (typeof(FullcalendarEngine) === 'undefined') { FullcalendarEngine = {}; }
+
+    FullcalendarEngine = {
+      Form: {
+        display: function(options) {
+          if (typeof(options) == 'undefined') { options = {} }
+            FullcalendarEngine.Form.fetch(options)
+        },
+        render: function(options){
+          $('#event_form').trigger('reset');
+          var startTime = options['starttime'] || new Date(), endTime = options['endtime'] || new Date(startTime.getTime());
+          if(startTime.getTime() == endTime.getTime()) { endTime.setMinutes(startTime.getMinutes() + 15); }
+          FullcalendarEngine.setTime('#event_starttime', startTime)
+          FullcalendarEngine.setTime('#event_endtime', endTime)
+
+          $('#event_all_day').attr('checked', options['allDay'])
+          if(options['allDay']){
+            FullcalendarEngine.disable_hour_minute($("#event_starttime_4i"));
+            FullcalendarEngine.disable_hour_minute($("#event_starttime_5i"));
+            FullcalendarEngine.disable_hour_minute($("#event_endtime_4i"));
+            FullcalendarEngine.disable_hour_minute($("#event_endtime_5i"));
+          }
+          $('#create_event_dialog').dialog({
+            title: 'New Requirement',
+            modal: true,
+            width: 500,
+            close: function(event, ui) { $('#create_event_dialog').dialog('destroy') }
+          });
+        },
+        fetch: function(options){
+          $.ajax({
+            type: 'get',
+            dataType: 'script',
+            async: true,
+            url: "<%= new_service_calendar_care_client_path %>",
+            success: function(){ FullcalendarEngine.Form.render(options) }
+          });
+        },
+        authenticity_token: function(){
+          return($('meta[name="csrf-token"]').attr("content"))
+        }
+      },
+      Events: {
+        move: function(event, dayDelta, minuteDelta, allDay, revertFunc){
+          $.ajax({
+            data: 'title=' + event.title + '&day_delta=' + dayDelta + '&minute_delta=' + minuteDelta + '&all_day=' + allDay + '&authenticity_token=' + FullcalendarEngine.Form.authenticity_token(),
+            dataType: 'script',
+            type: 'post',
+            url: "/calendar/care_client/" + event.id+ "/move_service",
+            error: function(xhr){
+              alert(JSON.parse(xhr.responseText)["message"])
+            },
+            success: function(xhr) {
+              $('.calendar').fullCalendar('refetchEvents');
+            }
+          });
+        },
+        resize: function(event, dayDelta, minuteDelta, revertFunc){
+          $.ajax({
+            data: 'title=' + event.title + '&day_delta=' + dayDelta + '&minute_delta=' + minuteDelta + '&authenticity_token=' + FullcalendarEngine.Form.authenticity_token(),
+            dataType: 'script',
+            type: 'post',
+            url: "/calendar/care_client/" + event.id + "/resize_service",
+            error: function(xhr){
+              alert(JSON.parse(xhr.responseText)["message"])
+            },
+            success: function(xhr) {
+              $('.calendar').fullCalendar('refetchEvents');
+            }
+          });
+        },
+        edit: function(event_id){
+          $.ajax({
+            url: "<%= edit_service_calendar_care_client_index_path %>",
+            data: {id: event_id},
+            success: function(data) {
+              $('#create_event_dialog').html('');
+              $('#edit_event_description').html(data['form']);
+            }
+          });
+        },
+        assign_pcg_manually: function(event_id){
+          console.log(event_id)
+          $.ajax({
+            url: "<%= assign_pcg_manually_calendar_care_client_path %>",
+            data: {event_id: event_id},
+            success: function(data) {
+              $('#edit_event_description').html(data['form']);
+            }
+          });
+        },
+        remove_assigned_pcg_manually: function(event_id){
+          console.log('Remove assigned PCG');
+          jConfirm('Do you really want to remove HHA?','Confirmation', function(c){
+            if(c){
+             $.ajax({
+              url: "<%= remove_pcg_calendar_care_client_path %>",
+              data: {assigned_event: event_id},
+              success: FullcalendarEngine.Events.refetch_events_and_close_dialog
+            });
+           }
+           else{
+            console.log("cancel")
+          }
+        });
+
+        },
+
+        delete: function(event_id, delete_all){
+          jConfirm('Do you really want to delete?','Confirmation', function(c){
+            if(c){
+              $.ajax({
+                data: 'authenticity_token=' + FullcalendarEngine.Form.authenticity_token() + '&delete_all=' + delete_all + '&id=' + event_id,
+                dataType: 'script',
+                type: 'delete',
+                url: "<%=  delete_service_calendar_care_client_index_path %>",
+                success: FullcalendarEngine.Events.refetch_events_and_close_dialog
+              });
+            }
+            else{
+              console.log("cancel")
+            }
+          });
+
+
+        },
+        refetch_events_and_close_dialog: function() {
+          $('#create_event_dialog').html('');
+          $('#edit_event_description').html('');
+          $('.calendar').fullCalendar('refetchEvents');
+          $('.dialog:visible').dialog('destroy');
+        },
+        showEventDetails: function(event){
+          $('#event_desc_dialog').html('')
+          $('#event_desc_dialog').addClass('event_action_list');
+          // $event_description = $('<div />').html(event.description).attr("id", "edit_event_description")
+          desc_freq_details = event.description;
+          $event_actions = $('<div />').attr("id", "event_actions").css({"padding-top": "10px", "float": "left", "width": "100%"});
+          $edit_event = $('<span />').attr("id", "edit_event");
+          $delete_event = $('<span />').attr("id", "delete_event");
+          $assign_pcg_manually = $('<span />').attr("id", "assign_pcg_manually");
+          title = event.title;
+          if (event.recurring) {
+            title = title + "(Recurring)";
+          }
+          if(event.is_edit){
+            $edit_event.html("<a href = 'javascript:void(0);' onclick ='FullcalendarEngine.Events.edit(" + event.id + ")'>Edit</a>");
+            if(event.item_type_status == "Active"){
+              if(event.status == "available"){
+                $assign_pcg_manually.html("<a href = 'javascript:void(0);' onclick ='FullcalendarEngine.Events.assign_pcg_manually(" + event.id + ")'>Assign HHA Manually</a>");
+              }else{
+                $assign_pcg_manually.html("<a href = 'javascript:void(0);' onclick ='FullcalendarEngine.Events.remove_assigned_pcg_manually(" + event.cc_assigned_event + ")'>Remove assigned HHA</a>");
+              }
+            }
+            if(event.status == "available"){
+              if (event.recurring) {
+                desc_freq_details = desc_freq_details + '<div class="row" style="padding-bottom: 0px; padding-top: 12px;"><label style="float: left; margin-right: 10px; font-size: 13px; color: rgb(147, 147, 147);">Frequency:</label> <span style="">'+ event.recurring_period +'</span></div>';
+                // Cannot be refactored as of now, the event bubbling of the eventClick of the fullCalendar is the culprit
+                $delete_event.html("&nbsp; <a href = 'javascript:void(0);' onclick ='FullcalendarEngine.Events.delete(" + event.id + ", " + false + ")'>Delete Only This Occurrence</a>");
+                $delete_event.append("&nbsp;&nbsp; <a href = 'javascript:void(0);' onclick ='FullcalendarEngine.Events.delete(" + event.id + ", " + true + ")'>Delete All In Series</a>")
+                $delete_event.append("&nbsp;&nbsp; <a href = 'javascript:void(0);' onclick ='FullcalendarEngine.Events.delete(" + event.id + ", \"future\")'>Delete All Future Events</a>")
+              } else {
+                $delete_event.html("<a href = 'javascript:void(0);' onclick ='FullcalendarEngine.Events.delete(" + event.id + ", " + false + ")'>Delete</a>");
+              }
+            }
+          }
+          if(event.status != "available"){
+            desc_freq_details = desc_freq_details + '<div class="row" style="padding-bottom: 0px; padding-top: 12px;"><label style="float: left; margin-right: 10px; font-size: 13px; color: rgb(147, 147, 147);">Assignee:</label> <span style="" class="assignee-spn">'+ event.assigned_path_name +'</span></div>';
+          }
+
+          $event_description = $('<div />').html(desc_freq_details).attr("id", "edit_event_description")
+          $event_actions.append($edit_event).append($delete_event).append($assign_pcg_manually)
+          $('#event_desc_dialog').append($event_description).append($event_actions)
+          $('#event_desc_dialog').dialog({
+            title: title,
+            modal: true,
+            width: 500,
+            close: function(event, ui){ $('#event_desc_dialog').html(''); $('#event_desc_dialog').dialog('destroy') }
+          });
+        },
+        showPeriodAndFrequency: function(value){
+         $('#until').show();
+          $('#week_day').hide();
+          switch (value) {
+            case 'Daily':
+            $('#period').html('day');
+            $('#frequency').show();
+            break;
+            case 'Weekly':
+            $('#period').html('week');
+            $('#frequency').show();
+            $('#week_day').show();
+            break;
+            case 'Monthly':
+            $('#period').html('month');
+            $('#frequency').show();
+            break;
+            case 'Yearly':
+            $('#period').html('year');
+            $('#frequency').show();
+            break;
+            default:
+            $('#frequency').hide();
+            $('#until').hide();
+          }
+        },
+
+        change_all_day: function(id){
+          all_day = $('#'+id)
+          console.log(!all_day.is(':checked'));
+          if(!all_day.is(':checked')){
+            FullcalendarEngine.disable_hour_minute($("#event_starttime_4i"));
+            FullcalendarEngine.disable_hour_minute($("#event_starttime_5i"));
+            FullcalendarEngine.disable_hour_minute($("#event_endtime_4i"));
+            FullcalendarEngine.disable_hour_minute($("#event_endtime_5i"));
+          }else{
+            FullcalendarEngine.enable_hour_minute($("#event_starttime_4i"));
+            FullcalendarEngine.enable_hour_minute($("#event_starttime_5i"));
+            FullcalendarEngine.enable_hour_minute($("#event_endtime_4i"));
+            FullcalendarEngine.enable_hour_minute($("#event_endtime_5i"));
+          }
+        },
+
+        startDragResize: function(){
+          is_darg_or_resize = true
+        },
+
+        stopDragResize: function(){
+          is_darg_or_resize = false
+        },
+      },
+      setTime: function(type, time) {
+        var $year = $(type + '_1i'), $month = $(type + '_2i'), $day = $(type + '_3i'), $hour = $(type + '_4i'), $minute = $(type + '_5i')
+        $year.val(time.getFullYear());
+        $month.prop('selectedIndex', time.getMonth());
+        $day.prop('selectedIndex', time.getDate() - 1);
+        $hour.prop('selectedIndex', time.getHours());
+        minute = (time.getMinutes()<10?'0':'') + time.getMinutes()
+        $minute.val(minute);
+
+        // console.log($day.find(":selected").text())
+
+        FullcalendarEngine.set_holder_value($day);
+        FullcalendarEngine.set_holder_value($month);
+        FullcalendarEngine.set_holder_value($hour);
+        FullcalendarEngine.set_holder_value($minute);
+        FullcalendarEngine.set_holder_value($year);
+      },
+      app_path: function(){
+        return (app_path || window.location.pathname.match(/\/(\w)+/)[0])
+      },
+
+      set_holder_value: function(type){
+        var selectedOption = type.find(":selected").text();
+        console.log(selectedOption)
+        type.next(".holder").text(selectedOption);
+      },
+
+      disable_hour_minute: function(hour_minute){
+        hour_minute.prop( "disabled", true );
+        hour_minute.parent().addClass('disabled-drop');
+      },
+
+      enable_hour_minute: function(hour_minute){
+        hour_minute.prop( "disabled", false );
+        hour_minute.parent().removeClass('disabled-drop');
+      }
+    }
+
+    autoSchedule = {
+      schedule: {
+        scheduleNow: function(){
+          if(!$("#Add-PCGC").hasClass("Deactive")){
+          console.log('auto assignement started');
+          jConfirm('Auto schedule will assign available HHA to CC events for one year, do you proceed?','Confirmation', function(c){
+            if(c){
+             $("#wait").css("display","block");
+             $.ajax({
+              url: "<%= auto_assign_pcg_calendar_care_client_path(@care_client) %>",
+              success: function(msg) {
+                $("#wait").css("display","none");
+                FullcalendarEngine.Events.refetch_events_and_close_dialog();
+                jAlert('info', msg, 'Success!');
+              }
+            });
+           }
+           else{
+            console.log("cancelled auto scheduling...")
+          }
+        });
+        }
+        },
+        showLoading: function(){
+          console.log("loading image activated")
+          $("#wait").css("display","block");
+        },
+        closeLoading: function(){
+          console.log("loading image deactivated")
+          $("#wait").css("display","none");
+        }
+      }
+    }
+
+  // $(document).ajaxStart(function(){
+  //   $("#wait").css("display","block");
+  // });
+  // $(document).ajaxComplete(function(){
+  //   $("#wait").css("display","none");
+  // });
+
+  });
+</script>

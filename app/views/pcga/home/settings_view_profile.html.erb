@@ -1,0 +1,555 @@
+<input type="hidden" value="<%= @error %>" id="error">
+<script type="text/javascript">
+
+  $(document).ready(function(){
+      // $('#edit_care_giver_company_15').resetClientSideValidations();
+      setUpdate();
+      $( "#edit-pcgc" ).click(function() {
+        hide_and_show();
+      });
+      $('.edit_care_giver_company').enableClientSideValidations();
+    });
+
+
+  function hide_and_show(){
+    $('#state').val('<%= @care_giver_company.pcgc_state %>');
+    $('#copy_state').val('<%= @care_giver_company.subscription_state %>');
+    $(".input-hide-show .inpt").css("display","block");
+    $(".hidden-block").css("display","block");
+    $(".input-hide-show .select-wrapper").css("display","block");
+    $(".input-hide-show .mandatory").css("display","inline-block");
+    $(".input-hide-show .spn-txt").css("display","none");
+    $(".display-block").css("display","none");
+    $(".input-hide-show .inputs .row").css("padding-bottom","20px");
+    $(".edit").show();
+    $(".view").hide();
+    $('#edit_care_giver_company').resetClientSideValidations();
+  }
+
+  function setUpdate(){
+    if($("#error").val() == "true"){
+      hide_and_show();
+    }
+    else{
+      $(".edit").hide();
+    }
+  }
+</script>
+
+
+<%= render "settings_navigation_top" %>
+<div class="display-block">
+    <h3 class="clear relative m_btm-15">View Details
+    <input type="button" value="Edit" id="edit-pcgc" class="edit-pcgc farCare-btn"></h3>
+    </div>
+
+
+
+
+    <h3 class="clear hidden-block">Edit Company Profile</h3>
+    <div class="input-hide-show">
+
+    <%= simple_form_for(@care_giver_company,:url => pcga_homes_path, method: :patch, :validate => true, html: {id: 'edit_care_giver_company'}) do |f| %>
+  <h4>Company Details</h4>
+  <div class="inputs">
+    <div class="row">
+      <div class="first-input-box">
+        <p>Company Name<span class="mandatory">*</span></p>
+        <span class="spn-txt"><%= @care_giver_company.company_name %></span>
+        <%= f.text_field :company_name, :class => "inpt" %>
+      </div>
+      <div class="input-box">
+        <p>Company Type <span class="mandatory">*</span></p>
+        <span class="spn-txt"><%= @care_giver_company.company_type.name %></span>
+        <%= f.select(:company_type_id, CompanyType.all.collect {|a| [a.name, a.id]}, {:include_blank => "Please select"},{class: "custom-select company_type"}) %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="first-input-box">
+        <p>Country <span class="mandatory">*</span></p>
+        <span class="spn-txt"><%= @care_giver_company.pcgc_country %></span>
+        <%= f.select(:pcgc_country, Country.all.collect {|a| [a.name, a.name]}, {:include_blank => "Please select"},{class: "custom-select", :id => "country"}) %>
+      </div>
+      <div class="input-box">
+        <p>Address 1<span class="mandatory">*</span></p>
+        <span class="spn-txt"><%= @care_giver_company.address_1 %></span>
+        <%= f.text_field :address_1 , :id => "addr_1", :class => "inpt" %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="first-input-box">
+        <p>Address 2</p>
+        <span class="spn-txt"><%= @care_giver_company.address_2%></span>
+        <%= f.text_field :address_2, :id => "addr_2", :class => "inpt" %>
+      </div>
+      <div class="input-box">
+        <p>City<span class="mandatory">*</span></p>
+        <span class="spn-txt"><%= @care_giver_company.city%></span>
+        <%= f.text_field :city, :id => "city", :class => "inpt" %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="first-input-box">
+        <p>State<span class="mandatory">*</span></p>
+        <span class="spn-txt"><%= @care_giver_company.pcgc_state %></span>
+        <%= f.select(:pcgc_state,  options_for_select(State.all.collect {|a| [a.name, a.name]},@care_giver_company.pcgc_state),{:include_blank => "Please select"},{class: "custom-select", :id => "state"}) %>
+      </div>
+      <div class="input-box">
+        <p>Zip<span class="mandatory">*</span></p>
+        <span class="spn-txt"><%= @care_giver_company.zip%></span>
+        <%= f.text_field :zip, :id => "zip", :class => "inpt" %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="first-input-box">
+        <p>Phone<span class="mandatory">*</span></p>
+        <span class="spn-txt"><%= @care_giver_company.phone %></span>
+        <%= f.text_field :phone , :class => "inpt", :title => "Please enter phone number (including country code) with no spaces or hyphens. e.g. '+19057076666'"%>
+      </div>
+      <div class="input-box">
+        <p>Fax</p>
+        <span class="spn-txt"><%= @care_giver_company.fax %></span>
+        <%= f.text_field :fax, :class => "inpt" %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="first-input-box">
+        <p>Website</p>
+        <span class="spn-txt"><%= @care_giver_company.website %></span>
+        <%= f.text_field :website, :class => "inpt" %>
+      </div>
+      <div class="input-box">
+        <p>Year Founded </p>
+        <span class="spn-txt"><%= @care_giver_company.year_founded %></span>
+        <%= f.text_field :year_founded, :class => "inpt"%>
+      </div>
+    </div>
+
+    <div class="row h-btm">
+      <div class="first-input-box">
+        <p>Custom Url</p>
+        <span class="spn-txt"><%="www.homacare.net/" + @care_giver_company.admin_setting.custom_url rescue nil %></span>
+        <%= f.text_field :custom_url, :value => "www.homacare.net/" + @care_giver_company.admin_setting.custom_url,  :class => "inpt", :disabled => true%>
+      </div>
+    </div>
+
+  </div>
+
+  <h4>Administrator Details</h4>
+  <div class="inputs">
+
+    <div class="row">
+      <div class="first-input-box">
+        <p>First Name <span class="mandatory">*</span> </p>
+        <span class="spn-txt"><%= @care_giver_company.admin_first_name%></span>
+        <%= f.text_field :admin_first_name, :class => "inpt"%>
+      </div>
+      <div class="input-box">
+        <p>Last Name <span class="mandatory">*</span></p>
+        <span class="spn-txt"><%= @care_giver_company.admin_last_name%></span>
+        <%= f.text_field :admin_last_name, :class => "inpt"%>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="first-input-box">
+        <p>Email <span class="mandatory">*</span></p>
+        <span class="spn-txt"><%= @care_giver_company.user.email%></span>
+        <%= f.text_field :admin_email, :value => @care_giver_company.user.email,  :class => "inpt", :disabled => true%>
+      </div>
+      <div class="input-box">
+        <p>Phone <span class="mandatory">*</span></p>
+        <span class="spn-txt"><%= @care_giver_company.admin_phone%></span>
+        <%= f.text_field :admin_phone, :class => "inpt", :title => "Please enter phone number (including country code) with no spaces or hyphens. e.g. '+19057076666'"%>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="first-input-box">
+        <p>Time Zone </p>
+        <span class="spn-txt"><%= @care_giver_company.admin_time_zone rescue nil %></span>
+        <%= f.select(:admin_time_zone, TimeZone.sort_by_name.collect {|a| [a.name, a.value]}, {:include_blank => "Please select"},{class: "custom-select"}) %>
+      </div>
+    </div>
+  </div>
+
+  <h5>Alternative Contact Person</h5>
+  <div class="inputs">
+
+    <div class="row">
+      <div class="first-input-box">
+        <p>First Name </p>
+        <span class="spn-txt"><%= @care_giver_company.alt_first_name %></span>
+        <%= f.text_field :alt_first_name, :class => "inpt" %>
+      </div>
+      <div class="input-box">
+        <p>Last Name </p>
+        <span class="spn-txt"><%= @care_giver_company.alt_last_name %></span>
+        <%= f.text_field :alt_last_name, :class => "inpt" %>
+      </div>
+    </div>
+
+    <div class="row h-btm">
+      <div class="first-input-box">
+        <p>Email </p>
+        <span class="spn-txt"><%= @care_giver_company.alt_email %></span>
+        <%= f.text_field :alt_email, :class => "inpt" %>
+      </div>
+      <div class="input-box">
+        <p>Phone </p>
+        <span class="spn-txt"><%= @care_giver_company.alt_phone %></span>
+        <%= f.text_field :alt_phone, :class => "inpt", :title => "Please enter phone number (including country code) with no spaces or hyphens. e.g. '+19057076666'" %>
+      </div>
+    </div>
+
+  </div>
+
+  <h4>Subscription Details</h4>
+  <div class="inputs">
+
+    <div class="row h-btm">
+      <div class="first-input-box">
+        <p>Package Type <span class="mandatory">*</span> </p>
+        <span class="spn-txt"><%= @care_giver_company.package_type.name%></span>
+        <%= f.select(:package_type_id, PackageType.all.collect {|a| [a.name, a.id]}, {:include_blank => "Please select"},{class: "custom-select package_type"}) %>
+      </div>
+      <div class="input-box">
+        <p>Payment Method <span class="mandatory">*</span></p>
+        <span class="spn-txt"><%= @care_giver_company.subscription_type.name%></span>
+        <%= f.select(:subscription_type_id, SubscriptionType.all.collect {|a| [a.name, a.id]}, {:include_blank => "Please select"},{class: "custom-select subscription_type"}) %>
+      </div>
+    </div>
+
+  </div>
+
+  <h4>Billing Address</h4>
+  <div class="inputs">
+    <div class="row hidden-block">
+      <fieldset class="radios">
+        <% if @care_giver_company.checked %>
+        <label class="label_radio r_on">
+          <%= f.radio_button :checked, 1, :checked => true, :id => 'same_adrs' %>
+          Same Address</label>
+          <label class="label_radio ">
+            <%= f.radio_button :checked, 0, :id => 'different_adrs' %>
+            Different Address</label>
+            <% else %>
+            <label class="label_radio ">
+              <%= f.radio_button :checked, 1, :id => 'same_adrs' %>
+              Same Address</label>
+              <label class="label_radio r_on">
+                <%= f.radio_button :checked, 0, :checked => true, :id => 'different_adrs' %>
+                Different Address</label>
+                <% end %>
+              </fieldset>
+            </div>
+            <% if @care_giver_company.checked %>
+            <div class="row">
+              <div class="first-input-box">
+                <p>Country <span class="mandatory">*</span></p><span id ="copy_country_error"
+                class="custom-error"></span>
+                <span class="spn-txt"><%= @care_giver_company.subscription_country %></span>
+                <%= f.select(:subscription_country, Country.all.collect {|a| [a.name, a.name ]}, {:include_blank => "Please select"},{class: "custom-select", :id => "copy_country",:disabled => true}) %>
+              </div>
+              <div class="input-box">
+                <p>Address 1 <span class="mandatory">*</span></p><span id ="copy_addr1_error"
+                class="custom-error"></span>
+                <span class="spn-txt"><%= @care_giver_company.subscription_address_1 %></span>
+                <%= f.text_field :subscription_address_1, :id => "copy_addr1", :class => "inpt" , :readonly => true %>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="first-input-box">
+                <p>Address 2</p>
+                <span class="spn-txt"><%= @care_giver_company.subscription_address_2 %></span>
+                <%= f.text_field :subscription_address_2, :id => "copy_addr2", :class => "inpt" , :readonly => true%>
+              </div>
+              <div class="input-box">
+                <p>City <span class="mandatory">*</span></p><span id ="copy_city_error"
+                class="custom-error"></span>
+                <span class="spn-txt"><%= @care_giver_company.subscription_city %></span>
+                <%= f.text_field :subscription_city, :id => "copy_city", :class => "inpt", :readonly => true%>
+              </div>
+            </div>
+
+            <div class="row h-btm">
+              <div class="first-input-box">
+                <p>State <span class="mandatory">*</span></p><span id ="copy_state_error"
+                class="custom-error"></span>
+                <span class="spn-txt"><%= @care_giver_company.subscription_state %></span>
+                <%= f.select(:subscription_state, State.all.collect {|a| [a.name, a.name ]}, {:include_blank => "Please select"},{class: "custom-select", :id => "copy_state",:disabled => true}) %>
+              </div>
+              <div class="input-box">
+                <p>Zip Code <span class="mandatory">*</span></p><span id ="copy_zip_error"
+                class="custom-error"></span>
+                <span class="spn-txt"><%= @care_giver_company.subscription_zip %></span>
+                <%= f.text_field :subscription_zip,:id => "copy_zip", :class => "inpt",  :readonly => true%>
+              </div>
+            </div>
+
+            <% else %>
+
+            <div class="row">
+              <div class="first-input-box">
+                <p>Country <span class="mandatory">*</span></p><span id ="copy_country_error" class="custom-error" ></span>
+                <span class="spn-txt"><%= @care_giver_company.subscription_country %></span>
+                <%= f.select(:subscription_country, Country.all.collect {|a| [a.name, a.name ]}, {:include_blank => "Please select"},{class: "custom-select", :id => "copy_country"}) %>
+              </div>
+              <div class="input-box">
+                <p>Address 1 <span class="mandatory">*</span></p><span id ="copy_addr1_error"
+                class="custom-error"></span>
+                <span class="spn-txt"><%= @care_giver_company.subscription_address_1 %></span>
+                <%= f.text_field :subscription_address_1, :id => "copy_addr1", :class => "inpt" %>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="first-input-box">
+                <p>Address 2 </p>
+                <span class="spn-txt"><%= @care_giver_company.subscription_address_2 %></span>
+                <%= f.text_field :subscription_address_2, :id => "copy_addr2", :class => "inpt" %>
+              </div>
+              <div class="input-box">
+                <p>City <span class="mandatory">*</span></p><span id ="copy_city_error"
+                class="custom-error"></span>
+                <span class="spn-txt"><%= @care_giver_company.subscription_city %></span>
+                <%= f.text_field :subscription_city, :id => "copy_city", :class => "inpt" %>
+              </div>
+            </div>
+
+            <div class="row h-btm">
+              <div class="first-input-box">
+                <p>State <span class="mandatory">*</span></p><span id ="copy_state_error"
+                class="custom-error"></span>
+                <span class="spn-txt"><%= @care_giver_company.subscription_state %></span>
+                <%= f.select(:subscription_state, options_for_select(State.all.collect {|a| [a.name, a.name ]},f.object.subscription_state), {:include_blank => "Please select"},{class: "custom-select", :id => "copy_state"}) %>
+              </div>
+              <div class="input-box">
+                <p>Zip Code <span class="mandatory">*</span></p><span id ="copy_zip_error"
+                class="custom-error"></span>
+                <span class="spn-txt"><%= @care_giver_company.subscription_zip %></span>
+                <%= f.text_field :subscription_zip,:id => "copy_zip", :class => "inpt"  %>
+              </div>
+            </div>
+            <% end %>
+
+          </div>
+          <h4>Company Preferences</h4>
+          <div class="inputs">
+            <div class="row">
+              <div class="first-input-box view">
+                 <div class="checkbox_new">
+                  <%= f.check_box :is_private_record, :id => 'yes' %>
+                  <label for="care_giver_company_is_private_record">Hide CC details with MR code</label>
+                </div>
+              </div>
+              <div class="first-input-box edit">
+                <div class="checkbox_new">
+                  <%= f.check_box :is_private_record%>
+                  <label for="care_giver_company_is_private_record">Hide CC details with MR code</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row hidden-block">
+          <p class="footer-note"><span class="mandatory">*</span> Mandatory fields</p>
+            <%= f.submit "Submit", value: "Submit", class: "farCare-btn submit first-btn" %>
+            <% end %>
+
+<script type="text/javascript">
+  $(function(){
+
+    $("#pcga_company").change(function(e){
+      var id = $(this).val();
+      document.location.href='/pcga/home/'+ id +'/edit';
+    });
+
+    $('#edit_care_giver_company').bind('submit', function() {
+      $(this).find(':input').removeAttr('disabled');
+    });
+
+    updateStates($('#country').val(),'country');
+    updateStates($('#copy_country').val(),'copy_country');
+
+    $('#same_adrs').click(function(){
+      $('.custom-error').empty();
+      var country = $('#country').val();
+      updateSameAddStates(country,'copy_country');
+      $('#copy_country').next().html($('#country').next().html());
+      $('#copy_state').next().html($('#state').next().html());
+      $("#copy_addr1").val($("#addr_1").val());
+      $("#copy_addr2").val($("#addr_2").val());
+      $("#copy_city").val($("#city").val());
+      $("#copy_zip").val($("#zip").val());
+      $("#copy_country").val($("#country").val());
+      $("#copy_country, #copy_state").attr("disabled", true)
+      $("#copy_addr1, #copy_addr2, #copy_city, #copy_zip").prop('readonly', true);
+    });
+
+    $('#different_adrs').click(function(){
+      $("#copy_addr1, #copy_addr2, #copy_city, #copy_zip").prop('readonly', false);
+      $("#copy_country, #copy_state").attr("disabled", false);
+
+      $("#copy_addr1, #copy_addr2, #copy_city, #copy_zip, #copy_country, #copy_state").change().focusin();
+      $('#copy_addr1, #copy_addr2, #copy_city, #copy_zip, #copy_country, #copy_state').val('');
+      $('#copy_country').next().html("Please select");
+      $('#copy_state').next().html("Please select");
+      $("#copy_country option").each(function(){
+        $(this).attr('selected', false);
+      })
+       $("#copy_country, #copy_state").change().focusout();
+      // $("#copy_country option").filter(function() {
+      //   return $(this)[0].value == ''
+      // }).attr('selected', true);
+      // $("#copy_state option").filter(function() {
+      //   return $(this)[0].value == ''
+      // }).attr('selected', true);
+      // updateStates($('#copy_country').val(),'copy_country');
+    });
+
+    $('#country').change(function(){
+      console.log("country changed");
+      updateStates($(this).val(),'country');
+      $('#state').next().html('Please select');
+    });
+
+    $('#copy_country').change(function(){
+      console.log("consoleopy_country changed");
+      updateStates($(this).val(),'copy_country');
+      $("#copy_state option").filter(function() {
+        return $(this)[0].value == ''
+      }).attr('selected', true);
+      $('#copy_state').next().html('Please select');
+    });
+
+
+
+    function updateStates(value,str){
+      $.ajax({
+        type: "POST",
+        dataType: 'script',
+        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));},
+        url: '/pcga/home/get_state_list_pcga',
+        data: {country: value, type: str},
+      });
+    }
+
+
+    function updateSameAddStates(value,str){
+      $.ajax({
+        type: "POST",
+        dataType: 'script',
+        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));},
+        url: '/pcga/home/get_state_list_pcga',
+        data: {country: value, type: str},
+      }).done(function() {
+        $("#copy_state option").filter(function() {
+          return $(this)[0].value == $('#state').val()
+        }).attr('selected', true);
+
+        $("#copy_country option").filter(function() {
+          return $(this)[0].value == $('#country').val()
+        }).attr('selected', true);
+
+      });
+    }
+  });
+
+
+$('.company_type').focusout(function(){
+    validation(".company_type");
+  });
+
+  $('.package_type').focusout(function(){
+    validation(".package_type");
+  });
+  $('.subscription_type').focusout(function(){
+    validation(".subscription_type");
+  });
+
+  $('#country').focusout(function(){
+    validation("#country");
+  });
+  $('#state').focusout(function(){
+    validation("#state");
+  });
+
+  $('.submit').click(function(){
+    validation_submit("#country");
+    validation_submit("#state");
+    validation_submit(".subscription_type");
+    validation_submit(".package_type");
+    validation_submit(".company_type");
+  });
+
+function validation(class_name){
+    if ($(class_name).val() == ''){
+      $(class_name).parent().next().hide();
+      $(class_name).parent().next().next().remove();
+    }
+}
+
+function validation_submit(class_name_submit){
+  if ($(class_name_submit).val() == ''){
+    $(class_name_submit).parent().next().show();
+    $(class_name_submit).parent().next().next().remove();
+  }
+}
+
+$('.submit').click(function(event){
+  $('.custom-error').empty();
+  var elems = [ '#copy_country', '#copy_addr1', '#copy_state', '#copy_city', '#copy_zip'];
+  is_validate = subscriptionValidation(elems);
+  if(is_validate == 1){
+    return true;
+  } else{
+    event.preventDefault();
+  }
+});
+
+
+function subscriptionValidation(elems){
+  var flag =1;
+  $.each(elems, function(i, item){
+    if($(item).val() == ""){
+      flag = 0;
+      $(item+'_error').text("cant be blank");
+    } 
+    // else{
+    //   if($(item).selector == '#copy_zip'){
+    //     flag = checkZip($(item).val())
+    //   }
+    // }
+  });
+  return flag;
+}
+
+// function checkZip(zip){
+//     var re = /[^0-9]/g;
+//     if (re.test(zip)) {
+//       $('#copy_zip_error').text("is not a number");
+//       flag = 0;
+//     }
+//     else{
+//       flag = zip.length != 5 ? setErrorMsg(zip) : 1;
+//       }
+//     return flag;
+//   }
+
+  function setErrorMsg(zip){
+    msg = zip.length > 5 ? "is too long (maximum is 5 characters)" : "is too short (minimum is 5  characters)";
+    $('#copy_zip_error').text(msg);
+    return 0;
+  }
+
+
+
+
+
+</script>

@@ -1,0 +1,17 @@
+<div id="header-block">
+  <div id="header">
+    <h1 id="logo"><%= link_to image_tag(pcga_home_logo, style: "max-height: 49px;max-width: 116px;"), pcga_home_index_path %></h1>
+    <div id="menu">
+      <ul>
+        <li class="welcome"><%= current_user.care_client.last_name %></li>
+        <li><%= link_to "", web_root_path, class: "home toolTip", title: "Home" %></li>
+        <li><a href="#" class="help toolTip" title="Help"></a></li>
+        <li><%= link_to "",'#', :class => "settings toolTip", title: "Settings" %></li>
+        <li><%= link_to "", destroy_user_session_path, method: :delete, :class => "logout toolTip", title: "Logout", id: "Logout"%></li>
+      </ul>
+    </div>
+  </div>
+  <div id="banner">
+    <%= image_tag "banner.png", :width =>"1366", :height => "106" %>
+  </div>
+</div>

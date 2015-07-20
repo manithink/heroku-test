@@ -1,0 +1,105 @@
+fieldset {
+	border: 0;
+}
+.radio-cnt label {
+	cursor: pointer;
+	line-height: 20px;
+	color:#717171;
+}
+.label_check input, .label_radio input {
+	margin-right: 5px;
+}
+#footer {
+	width: 100%;
+	text-align: center;
+	font-size: 12px;
+}
+/*#footer a {
+	padding: 2px 10px;
+	margin: 0 2px;
+	color: #999;
+	background: #ddd;
+	text-decoration: none;
+	border-radius: 10px;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	-khtml-border-radius: 10px;
+}
+#footer a:hover, #footer a:focus {
+	color: #fff;
+	background: #333;
+	background: rgba(0,0,0,.3);
+}*/
+.label_check, .label_radio {
+	padding-left: 34px;
+}
+.label_radio {
+	background: asset_url('radio-off.png') no-repeat;
+	float: left;
+	padding-left: 25px;
+	margin-right: 35px;
+}
+.label_check {
+	background: asset_url('checkbox.png') no-repeat;
+}
+label.c_on {
+	background: asset_url('checkbox-selected.png') no-repeat;
+}
+label.r_on {
+	background: asset_url('radio-on.png') no-repeat;
+}
+.label_check input, .label_radio input {
+	position: absolute;
+	left: -9999px;
+}
+.radios {
+	padding-bottom:20px;
+}
+
+
+
+/*** checkbox styles ***/
+.checkbox_new label {
+	display: block;
+	cursor: pointer;
+	position: relative;
+	padding-left: 25px;
+	/*margin-right: 15px;*/
+	font-size: 13px;
+}
+.checkbox_new input[type=checkbox] {
+	display: none;
+}
+.checkbox_new label:before {
+	content: "";
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	margin-right: 10px;
+	position: absolute;
+	left: 0;
+	bottom: 1px;
+	background:asset_url("checkbox.png") no-repeat;
+}
+.checkbox_new label {
+	margin-bottom: 10px;
+}
+.checkbox_new input[type=checkbox]:checked + label:before {
+	content: "";
+	background:asset_url("checkbox-selected.png") no-repeat;
+	font-size: 15px;
+	color: #f3f3f3;
+	text-align: center;
+    line-height: 15px;
+}
+.column-three .checkbox_new input[type=checkbox]:checked + label:before, .column-three .checkbox_new label:before{
+	top: 1px;
+}
+.column-three .checkbox_new label{
+	padding-right: 33px;
+}
+.column-three .chat {
+	position: absolute;
+	right: 0;
+	top: 0;
+}

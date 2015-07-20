@@ -1,0 +1,130 @@
+  <!-- content starts here -->
+  <div id="content-block">
+    <div class="breadcrum">
+      <ul>
+        <li><%= link_to "Home", pcga_home_index_path %></li>
+        <li class="greater-than"><%= image_tag "greater-than.png", :width => "4", :height => "7" %></li>
+        <li>Reports</li>
+      </ul>
+    </div>
+    <h3 class="clear">Generate Report</h3>
+    <div class="inputs">
+    <div class="gererate-reports">
+    <%= form_tag( {:controller => 'pcga/home',:action => 'report', :format => :pdf},id: "report_form", :method => :get) do %>
+      <!-- row starts here -->
+        <div class="row h-btm">
+             <fieldset class="radios" style="padding-bottom:0;">
+                    <label class="label_radio r_on" id = "care_client">
+                      <!-- <input name="sample-radio1" type="radio" checked=""> -->
+                      <%= radio_button_tag(:role, "care_client", "checked") %>
+                      Care Client
+                     </label>
+                    <label class="label_radio" id = "care_giver">
+                      <!-- <input name="sample-radio1" type="radio"> -->
+                      <%= radio_button_tag(:role, "care_giver") %>
+                      <%= change_name("Care Giver")%>
+                     </label>
+                  </fieldset>
+        </div>
+        <!-- row ends here -->
+        <!-- row starts here -->
+        <div class="row">
+            <p>Choose <span id="role">Care Client</span><span class="mandatory">*</span></p>
+            <select name="user_id" class="custom-select" id = "user_id">
+              <option>Please Select</option>
+            </select>
+            <span class="error">&nbsp;</span>
+        </div>
+        <!-- row ends here -->
+         <!-- row starts here -->
+        <div class="row h-btm">
+        	<div class="report-date">
+            <p>Start Date<span class="mandatory">*</span><span class="start_date">&nbsp;</span></p>
+            <%= text_field_tag :start_date, nil,class: "txtFromDate", readonly: true%>
+          </div>
+          <div class="report-date fright">
+            <p>End Date<span class="mandatory">*</span><span class="end_date">&nbsp;</span></p>
+            <%= text_field_tag :end_date, nil,class: "txtToDate", readonly: true%>
+          </div>
+        </div>
+        <!-- row ends here -->
+        <div class="row">
+          <!-- <input type="button" value="Generate Report" class="farCare-btn generate-report first-btn"  /> -->
+          <%#= link_to "Generate Report", pcga_report_path(:pdf) , :format => 'pdf', class: "farCare-btn generate-report first-btn" %>
+          <p class="footer-note"><span class="mandatory">*</span> Mandatory fields</p>
+          <%= submit_tag 'Generate Report', class: "farCare-btn generate-report first-btn"  %>
+      </div>
+    <% end %>
+    </div>
+</div>
+  </div>
+  <!-- content starts here -->
+  <script type="text/javascript">
+    $(function() {
+      if ($('#care_giver').hasClass("r_on")){
+        $('#role').html("<%= change_name("Care Giver")%>");
+        getUsers("care_giver");
+      }
+      else{
+        $('#role').html("Care Client");
+        getUsers("care_client");
+      }
+  });
+
+$("#report_form").submit(function(event){
+  if($("#user_id").val()=="Please Select"){
+    event.preventDefault();
+    $(".error").text("Can't be blank");
+  }
+  else if($("#start_date").val()==""){
+    event.preventDefault();
+    $(".error").empty();
+    $(".start_date").text("Choose date");
+  }
+   else if($("#end_date").val()==""){
+    event.preventDefault();
+    $(".start_date").empty();
+    $(".end_date").text("Choose date");
+  }
+})
+
+   $('#care_client').on('click',function(){
+        $('#role').html("Care Client");
+        getUsers("care_client");
+    });
+   $('#care_giver').on('click',function(){
+        $('#role').html("<%= change_name("pcg")%>");
+        getUsers("care_giver");
+    });
+
+   function getUsers(value){
+    $.ajax({
+      type: "POST",
+      dataType: 'script',
+      beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));},
+      url: '/pcga/get_users',
+      data: {roles: value},
+    });
+  }
+
+  $(document).ready(function(){
+    $(".txtFromDate").datepicker({
+        numberOfMonths: 1,
+        dateFormat: 'mm-dd-yy',
+        maxDate : new Date(),
+        onSelect: function(selected) {
+          $(".txtToDate").datepicker("option","minDate", selected)
+        },
+        showMonthAfterYear : true
+    });
+    $(".txtToDate").datepicker({
+        numberOfMonths: 1,
+        dateFormat: 'mm-dd-yy',
+        maxDate : new Date(),
+        onSelect: function(selected) {
+           $(".txtFromDate").datepicker("option","maxDate", selected)
+        },
+        showMonthAfterYear : true
+    });
+});
+</script>

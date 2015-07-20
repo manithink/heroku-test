@@ -1,0 +1,122 @@
+#popup_container {
+	font-size: 12px;
+	/*min-width: 350px !important; /* Dialog will be no smaller than this */ /* Dialog will wrap after this width */
+	background-color:#fff;
+	z-index: 99999;
+	position: absolute;
+	left: 39%;
+	min-width: 400px !important;
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	box-sizing: border-box;         /* Opera/IE 8+ */
+	-webkit-box-shadow: 0 8px 6px -6px #646464;
+	   -moz-box-shadow: 0 8px 6px -6px #646464;
+	        box-shadow: 0 8px 6px -6px #646464;
+}
+
+#popup_title {
+    text-align: left;
+    padding:15px 20px;
+		background-color:#26a7e9;
+		color:#fff;
+		font-family: 'verdanaregular';
+}
+
+#popup_content {
+  position: relative;
+  padding: 20px;
+}
+
+/*#popup_content.info 
+{
+  color: #00529B;
+  background-color: #BDE5F8;    
+	background-image: url(info.png);
+}
+
+#popup_content.success 
+{
+  color: #4F8A10;
+  background-color: #DFF2BF;    
+  background-image: url(success.png);
+}
+
+#popup_content.warning
+{
+    color: #E20E41;
+    background-color: 	#0EA4E2;
+	background-image: url(warning.png);
+}
+
+#popup_content.error 
+{
+  color:"red";
+ /* background-color: #FFBABA;*/
+	/*background-image: url(error.png);
+}
+
+#popup_content.confirm 
+{ 
+	background-color: #BDE5F8;     
+	background-image: url(important.png);
+	background-position: 6% 21%
+}
+
+#popup_content.prompt 
+{ 
+	background-image: url(help.gif);
+}*/
+
+#popup_message {
+	font-size: 14px;
+	/*padding-top: 10px;
+	/*color: #fff;*/
+	/*color:#F00;*/
+	padding-bottom: 20px;
+}
+
+#popup_panel {
+	text-align: center;
+	padding:10px 0 0;
+
+}
+
+#popup_prompt {
+	margin: .5em 0em;
+}
+#popup_ok{
+	width:144px;
+}
+/*#popup_ok:hover{
+	background-position: 0 -46px;
+}*/
+#popup_cancel{
+	width:144px;
+	/*background: url(pop_btns.png) -152px 0 no-repeat;
+	width:144px;
+	height:46px;
+	outline: none;
+	margin-top: 20px;*/
+}
+#popup_cancel:hover{
+	/*background-position: -152px -46px;*/
+}
+#popup_link_new{
+	background: url(pop_btns.png) -303px 0 no-repeat;
+	width:144px;
+	height:46px;
+	outline: none;
+	margin-top: 20px;
+}
+#popup_link_new:hover{
+	background-position: -303px -46px;
+}
+#popup_link {
+    background: url("link_pop_btn.png") no-repeat scroll 0 0 transparent;
+    height: 30px;
+    outline: medium none;
+    width: 90px;
+}
+#popup_ok, #popup_cancel{
+	padding: 7px 0;
+}

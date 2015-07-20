@@ -1,0 +1,44 @@
+/*** checkbox styles ***/
+.checkbox_new label {
+	display: block;
+	cursor: pointer;
+	position: relative;
+	padding-left: 25px;
+	font-size: 13px;
+}
+.checkbox_new input[type=checkbox] {
+	display: none;
+}
+.checkbox_new label:before {
+	content: "";
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	margin-right: 10px;
+	position: absolute;
+	left: 0;
+	bottom: 1px;
+	background:asset_url("checkbox.png") no-repeat;	
+}
+.checkbox_new label {
+	margin-bottom: 10px;
+}
+.checkbox_new input[type=checkbox]:checked + label:before {
+	content: "";
+	background:asset_url("checkbox-selected.png") no-repeat;	
+	font-size: 15px;
+	color: #f3f3f3;
+	text-align: center;
+    line-height: 15px;
+}
+.view_care_plan .checkbox_new label{
+	margin-bottom: 0;
+}
+.signature p{
+	width: auto;
+	margin-top: 10px;
+}
+.miles, .hours{
+	max-width: 172px !important;
+	width: 50% !important;
+}

@@ -1,0 +1,29 @@
+<div class="calender-pop-cnt"><%= event.title %></div>
+<%= alert_pcg_availablity(care_givers) %>
+<!-- <div class="calender-alert">PCGs are not available!!</div><br> -->
+<%= form_for :assigned_event, url: create_asigned_event_calendar_care_client_path, html: { class: "", id: "event_form" } do |f| %>
+  <%= f.select :care_giver_id, care_givers.collect {|x| [(x.first_name+" "+x.last_name),x.id]},
+  {prompt: 'Select'}, class: "custom-select" %>
+   <%= f.hidden_field :cc_event_id, value: event.id %>
+   <%= f.hidden_field :care_client_id, value: params[:id] %>
+   <%= f.hidden_field :pcg_event_id, value: "" %>
+  <%= f.submit 'Save', class: "farCare-btn save first-btn" , id: "assign-pcg-save"%>
+<% end %>
+
+<script type="text/javascript">
+$(function(){
+  $('.ui-dialog-title').html('Assign Manually')
+	$('#event_actions').hide();
+	$('#edit_event_description').addClass('assign-pcg-calendar');
+  $(".custom-select").each(function(){
+    $(this).wrap("<span class='select-wrapper '></span>");
+    $(this).after("<span class='holder'></span>");
+    var selectedOption = $(this).find(":selected").text();
+    $(this).next(".holder").text(selectedOption);
+  });
+  $(".custom-select").change(function(){
+    var selectedOption = $(this).find(":selected").text();
+    $(this).next(".holder").text(selectedOption);
+  });
+});
+</script>

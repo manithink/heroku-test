@@ -1,0 +1,30 @@
+<% id = @care_client.id %>
+<div id="firstpane" class="accordian-list h-btm accordian-details"> <!--Code for menu starts here-->
+	<% unless @services.empty? %>
+	<% @services.each do |service| %>
+	<p class="accordian-head" onclick="toggle(this);"><%= service[0]%> <span class="arrow"></span></p>
+	<div class="accordian-body">
+		<div class="inputs view_care_plan">
+			<!-- row starts here -->
+			<% service[1].each do |serv_array| %>
+			<div class="row">
+				<span class="column-three">
+					<%= serv_array[0].name if serv_array[0]%>
+					<%= is_required?(serv_array[0],id) %>
+				</span>
+				<span class="column-three">
+					<%= serv_array[1].name if serv_array[1]%>
+					<%= is_required?(serv_array[1], id) %></span>
+					<span class="column-three last">
+						<%= serv_array[2].name if serv_array[2]%>
+						<%= is_required?(serv_array[2],id) %></span>
+					</div>
+					<% end %>
+					<!-- row ends here -->
+				</div>
+			</div>
+			<% end %>
+			<% else %>
+			<p>No Services Assigned.</p>
+			<% end %>
+		</div>

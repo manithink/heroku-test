@@ -1,0 +1,184 @@
+
+<script type="text/javascript">
+$( document ).ready(function() {
+  scroll_offset = -96;
+  scroll_top = 100;
+    // initiate page scroller plugin
+    $('body').pageScroller({
+       navigation: '#landing-menu',
+       scrollOffset: scroll_offset
+     });
+
+    //flex slider
+   $(window).load(function(){
+      $('.flexslider').flexslider({
+        animation: "slide",
+        pauseOnAction: false,
+        start: function(slider){
+          $('body').removeClass('loading');
+        }
+      });
+    });
+});
+</script>
+
+  <!-- header starts here -->
+  <div id="section-landing-header">
+    <div id="landing-header-block">
+      <div id="header">
+        <h1 id="logo"><%= image_tag "landing-logo.png", width: "141", height: "60"%></h1>
+        <div id="landing-menu">
+          <ul>
+            <li id="login-li" class="active"><a href="#section-login">Home <span></span></a></li>
+            <li id="about-li"><a href="#section-about-us">About Us <span></span></a></li>
+            <li id="contact-li" class="last"><a href="#section-contact-us">Contact Us <span></span></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- header ends here -->
+  <!-- Login starts here -->
+  <div id="section-login" class="section">
+    <div id="login-inner">
+      <div class="landing-login-wrapper"> <%= image_tag "shutter-stock.png", width: "373", height: "520", class: "home_img" %>
+        <div id="login-here">
+          <!-- <img src="images/login-txt.png" width="404" height="26" /> -->
+          <h2>“Extending Wellness at Home”</h2>
+          <div class="login-box">
+            <h3>To get more info, enter:</h3>
+            <div class="error-home">&nbsp;</div>
+            <div class="row">
+              <%= form_tag "get_more_info", method: :post, :id => 'get_more_info' do |f| %>
+                <%= text_field_tag :name, nil, placeholder: "Name", id: "name" %>
+                <%= text_field_tag :email, nil, placeholder: "Email", id: "email" %>
+                <%= submit_tag "Submit", class: "submit-landing"%>
+              <% end %>
+            </div>
+          </div>
+          <div class="what-is">
+          <% if @admin_data.youtube_url.present? %>
+                  <a class="to_popup">What is HomaCare?</a>
+                <% else %>
+                  <a href="#section-contact-us">What is HomaCare?</a>
+                <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Login ends  here -->
+  <!-- Abut Us starts here -->
+  <div id="section-about-us" class="section">
+    <div class="common-wrapper">
+      <div class="flexslider">
+        <!-- start Basic Jquery Slider -->
+        <ul class="slides">
+        <% unless @images.empty? %>
+        <% @images.each do |image| %>
+         <li><%= image_tag image.image , height: '320', width: '940' %></li>
+        <% end %>
+        <% end %>
+        </ul>
+        <!-- end Basic jQuery Slider -->
+
+      </div>
+      <!-- <p>FarCare enables care providers to define comprehensive Wellness plan, facilitate and monitor adherence  through intelligent remote gathering of information and reporting progress or any deviations – extends wellness at home while connecting care recipients with other personal and professional care providers. </p> -->
+      <ul class="listings">
+         <%= @admin_data.about_us.html_safe if @admin_data.about_us.present?%>
+      </ul>
+    </div>
+  </div>
+  <!-- Abut Us ends here -->
+  <!-- Contact Us starts here -->
+  <div id="section-contact-us" class="section">
+    <div class="section-contact-us">
+      <div class="common-wrapper">
+        <!-- <p>For further correspondence please send email to <a>info@farcare.com</a> or call us at <b>404-432-1284</b></p> -->
+        <p>For further correspondence, please contact us below:</p>
+        <div class="address-box"> <%= image_tag "location.png", width: "73", height: "114"%>
+          <div class="contact-us-p">
+          <%= @admin_data.contact_us.html_safe if @admin_data.contact_us.present? %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- popup start-->
+  <%= video_id = @admin_data.youtube_url.match(/v=([\w|\W]+)$/)[1] rescue "" %>
+
+    <div id="youtube_container" class="farCare-popup">
+    <span class="youtube-close" style='display:block;'><a href="" class="close"></a></span>
+    <div id='ytContent'></div>
+<!--       <iframe width="640" height="390"
+      src="https://www.youtube.com/embed/<%= video_id %>" style="border:0;" id="farcare-video">
+      </iframe> -->
+    </div>
+  <!-- popup end -->
+  <div id="backgroundPopup"></div>
+  <!-- Contact Us ends here -->
+  <!-- footer starts here -->
+  <!-- footer ends here -->
+<script type="text/javascript">
+  var player;
+  var playStatus = 1
+  var format = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+  $("#get_more_info").submit(function(e){
+    $("div.error-home").html("&nbsp;");
+    if($.trim($("#name").val())==""){
+        e.preventDefault();
+        $("div.error-home").html("Name can't be blank");
+    }
+    else if($.trim($("#email").val())==""){
+      e.preventDefault();
+      $("div.error-home").html("Email can't be blank");
+    }
+    else if(!(format.test($("#email").val()))){
+      e.preventDefault();
+      $("div.error-home").html("Invalid email");
+    }
+  })
+function loadYtVideo(){
+ var tag = document.createElement('script');
+  tag.src = "https://www.youtube.com/player_api";
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+}
+
+onYouTubePlayerAPIReady = function() {
+    player = new YT.Player('ytContent', {
+      height: '390',
+      width: '640',
+      videoId: "<%=video_id%>"
+    });
+
+  }
+
+  loadYtVideo();
+
+    $(".close").click(function(e) {
+      e.preventDefault()
+      var video_id  = "<%=video_id%>"
+      player.seekTo(0);
+      player.stopVideo();
+      $("#care-clients").fadeOut("normal");
+      $("#youtube_container").fadeOut("normal"); // fadein popup div
+      $("#backgroundPopup").fadeOut("normal");
+      $("#ytContent").hide();
+  });
+
+  $("a.to_popup").click(function() {
+      $("div.loader").show();
+      $("#ytContent").show();
+      setTimeout(function(){ // then show popup, deley in .5 second
+        $("div.loader").fadeOut('normal');
+        $("#care-clients").fadeIn(0500); // fadein popup div
+        $("#youtube_container").fadeIn(0500); // fadein popup div
+        $("#backgroundPopup").css("opacity", "0.7"); // css opacity, supports IE7, IE8
+        $("#backgroundPopup").fadeIn(0001); // function show popup
+      }, 500); // .5 second
+  return false;
+  });
+
+</script>

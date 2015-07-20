@@ -1,0 +1,52 @@
+<script type="text/javascript">
+    $(document).ready(function(){ 
+		$( "#edit-pcgc" ).click(function() {
+		  $(".input-hide-show .inpt").css("display","block");
+		  $(".hidden-block").css("display","block");
+		  $(".input-hide-show .select-wrapper").css("display","block");
+		  $(".input-hide-show .mandatory").css("display","inline-block");
+        $(".input-hide-show .spn-txt").css("display","none");
+		$(".display-block").css("display","none");
+		$(".input-hide-show .inputs .row").css("padding-bottom","20px");
+		});
+    })
+</script>
+
+
+  <div id="content-block">
+    <div class="breadcrum">
+      <ul>
+        <li><%= link_to "Home",pcg_home_index_path(),:id =>"pcgc_settings_edit_cancel" %></li>
+        <li class="greater-than"><%=image_tag "greater-than.png", :width => "4", :height => "7" %></li>
+        <li>Settings</li>
+        <li class="greater-than"><%=image_tag "greater-than.png", :width => "4", :height => "7" %></li>
+        <li class="edit"><%= link_to "View Details",pcg_settings_view_profile_path(@care_giver_current.id),:id =>"pcgc_settings_edit_cancel" %></li>
+        <li class="greater-than edit"><%= image_tag "greater-than.png", :width => "4", :height => "7" %></li>
+        <li class="edit" >Edit <%= change_name("pcg")%></li>
+        <li class="view">View Details</li>
+      </ul>
+    </div>
+
+    <div class="display-block">
+      <h3 class="clear relative">View Profile
+        <input type="button" value="Edit Profile" id="edit-pcgc" class="edit-pcgc farCare-btn">
+      </h3>
+    </div>
+
+    <h3 class="clear hidden-block">Edit Profile</h3>
+    <div class="input-hide-show"> 
+    <div class="settings-menu two-tabs">
+      <ul>
+        <li><%= link_to "View Profile", pcg_settings_view_profile_path,class: "#{
+                  if params[:controller] == "pcg/home" || params[:controller] == "pcga/home"
+                    ["settings_view_profile"].include?(params[:action]) ? "active" : ""
+                  end }"%><span></span></li>
+        <li><%= link_to "Change Password", pcg_settings_change_password_path %><span></span></li>
+      </ul>
+    </div>
+
+<%= render "shared/edit_pcg" %>
+
+<%= link_to (button_tag "Cancel",:type => 'button',:class => "farCare-btn cancel"), pcg_settings_view_profile_path(@care_giver_current.id),:id =>"pcgc_settings_edit_cancel" %>
+  </div>
+  </div>

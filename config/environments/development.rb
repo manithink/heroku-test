@@ -1,4 +1,4 @@
-Rails.application.configure do
+Farcare::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
   # In the development environment your application's code is reloaded on
@@ -14,12 +14,13 @@ Rails.application.configure do
   config.action_controller.perform_caching = false
 
   # Don't care if the mailer can't send.
-  config.action_mailer.raise_delivery_errors = false
-
+  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.perform_deliveries = true
+  
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
 
-  # Raise an error on page load if there are pending migrations.
+  # Raise an error on page load if there are pending migrations
   config.active_record.migration_error = :page_load
 
   # Debug mode disables concatenation and preprocessing of assets.
@@ -27,11 +28,18 @@ Rails.application.configure do
   # number of complex assets.
   config.assets.debug = true
 
-  # Adds additional error checking when serving assets at runtime.
-  # Checks for improperly declared sprockets dependencies.
-  # Raises helpful error messages.
-  config.assets.raise_runtime_errors = true
+  #devise mailer configuration
+  config.action_mailer.default_url_options = { :host => 'localhost:3000' }
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+  :address              => "smtp.gmail.com",
+  :port                 => 587,
+  # :user_name            => 'mail.homacare@gmail.com',
+  # :password             => 'homacare@123',
+  :user_name            => 'subramanian@thinkbridge.in',
+  :password             => 'viswanathaan6',
+  :authentication       => 'plain',
+  :enable_starttls_auto => true  }
 
-  # Raises error for missing translations
-  # config.action_view.raise_on_missing_translations = true
+  Rails.application.routes.default_url_options[:host] = 'localhost:3000'
 end

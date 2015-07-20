@@ -1,0 +1,90 @@
+<%#= @assigned_care_clients.to_yaml %>
+ <!-- content starts here -->
+<div id="content-block">
+  <div class="breadcrum">
+    <ul>
+      <li><%= link_to "Home", pcg_home_index_path%></li>
+      <li class="greater-than"><%= image_tag("greater-than.png", style: "height: 7px;width: 4px;")%></li>
+      <li>Care Clients</li>
+    </ul>
+  </div>
+  <h3 class="clear relative m_btm-15">Care Clients Assigned List   
+  </h3>
+ <div class="search relative">
+    <%= form_tag pcg_home_index_path, :method => 'get'  do %>
+    <%= hidden_field_tag :direction, params[:direction] %>
+    <%= hidden_field_tag :sort, params[:sort] %>
+    <p>
+      <%= text_field_tag :search, params[:search], placeholder: "Search" %>
+      <%= submit_tag "", :name => nil, :class => "search-icon"%>
+    </p>
+    <% end %>
+  </div>
+  <div class="row">
+      
+    <table width="100%" cellspacing="0" cellpadding="0" class="farCare-tble sort-table">
+      <% unless @assigned_care_clients.empty? %>
+        <tr>
+          <th width="18%"><%= sortable "first_name" %></th>
+          <th width="18%"><%= sortable "last_name" %></th>
+          <th width="18%">PFCG </th>
+          <th width="9%">Cal</th>
+          <th width="10%">Med</th>
+          <th width="15%">Services</th>
+          <th width="6%"><%= sortable "status" %></th>
+      <% else %>
+          <th width="18%">First Name</th>
+          <th width="18%">Last Name</th>
+          <th width="18%">PFCG</th>
+          <th width="9%">Cal</th>
+          <th width="10%">Med</th>
+          <th width="15%">Services</th>
+          <th width="6%">Status</th>
+      <% end %>
+          </tr>
+        <% unless @assigned_care_clients.empty? %>
+          <% @assigned_care_clients.each do |care_client| %>
+             <tr>
+              <td><%= link_to care_client.first_name, edit_fcg_home_path(care_client.id) %></td>
+              <td><%= link_to care_client.last_name, edit_fcg_home_path(care_client.id) %></td>
+              <td><a href="#" class= "toolTip" title ="">-</a></td>
+              <td><%= link_to image_tag("calender.png", style: "height: 16px;width: 16px;"), "/pcg/vacation/#{@care_giver.id}/current_care_client_events/#{care_client.id}", class: "calender active"%></td>
+              <td><%= link_to image_tag("medication-1.png", style: "height: 16px;width: 16px;"), "#", class: "coming_soon"%></td>
+              <td><%= link_to "View", pcg_care_client_services_path(care_client), class: "service-btn" %></td>
+              <td class="last-td1"><%= status_fcg_assigned(care_client.status) %></a></td> 
+            </tr>
+          <% end %>
+        <% else %>
+          <tr><td colspan="11" class="last-td">No Records Found</td><tr>
+        <% end %>
+    </table>
+  </div>
+  <% unless @assigned_care_clients.empty? %>
+    <div class="row">
+        <%= paginate @assigned_care_clients, :outer_window => 1 %>
+    </div>
+  <% end %>
+</div>
+  <!-- content starts here --> 
+<div id="backgroundPopup"></div>
+<!-- scripts --> 
+<script>
+    function setupLabel() {
+        if ($('.label_check input').length) {
+            $('.label_check').each(function(){ 
+                $(this).removeClass('c_on');
+            });
+            $('.label_check input:checked').each(function(){ 
+                $(this).parent('label').addClass('c_on');
+            });                
+        };
+        if ($('.label_radio input').length) {
+            $('.label_radio').each(function(){ 
+                $(this).removeClass('r_on');
+            });
+            $('.label_radio input:checked').each(function(){ 
+                $(this).parent('label').addClass('r_on');
+            });
+        };
+    };
+</script>

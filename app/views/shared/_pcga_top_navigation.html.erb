@@ -1,0 +1,47 @@
+<div id="header-block">
+  <div id="header">
+    <h1 id="logo"><%= link_to image_tag(pcga_home_logo, style: "max-height: 49px;max-width: 116px;"), pcga_home_index_path %></h1>
+    <div id="menu">
+      <ul>
+        <li class="welcome"><%= get_full_name_pcga(current_user.care_giver_company) %></li>
+        <li><%= link_to "", pcga_home_index_path, class: "#{params[:action].eql?("index") ? "home toolTip active" : "home toolTip"}", title: "Home" %></li>
+        <li><a href="#" class="help toolTip" title="Help"></a></li>
+        <li><%= link_to "",pcga_settings_path, class: "#{params[:action].include?("setting") ? "settings toolTip active" : "settings toolTip"}", title: "Settings" %></li>          
+        <li><%= link_to "", destroy_user_session_path, method: :delete, :class => "logout toolTip", title: "Logout", id: "Logout" %></li>
+      </ul>
+    </div>
+  </div>
+  <div id="banner">
+    <div id="nav">
+      <div id="nav-wrapper">
+        <% if time_zone != nil %>
+          <span class="stdTime"><%= time_zone %></span>
+        <% end %>
+          <ul>
+            <li><%= link_to "#{change_name("Care Giver")}s", pcga_home_index_path, method: :get, class: "#{
+                  if ["pcg/home","pcga/home","calendar/care_giver"].include? (params[:controller])    
+                    ["index","edit","new","assign_care_clients_new"].include?(params[:action]) ? "active" : ""
+                  end }"
+
+                %></li>
+              <li ><%= link_to "Invite Family", pcga_invite_family_path, method: :get, class: "#{params[:action].eql?("invite_family") ? "active" : ""}" %>
+              </li>
+              <li><%#= link_to "Care Clients", fcg_view_care_clients_path, method: :get, class: "#{params[:action].eql?("view_care_clients") ? "active" : ""}"%>
+              <%= link_to "Care Clients", fcg_view_care_clients_path, method: :get, class: "#{
+              if  ["fcg/home","calendar/care_client"].include? (params[:controller])
+              ["view_care_clients","edit","new","custamise_service_plan","index","view_services"].include?(params[:action]) ? "active" : ""
+              end
+              }"%>
+              </li>
+              <li>
+                <!-- <a class = "coming_soon" href="">Services</a> -->
+                <%= link_to "Services", pcga_list_services_path, method: :get, class: "#{params[:action].eql?("list_services") ? "active" : ""}" %>
+              </li>
+
+              <li><%= link_to "Reports", pcga_report_path, class: "#{params[:action].eql?("report") ? "active" : ""}" %></li>
+          </ul>
+      </div>
+    </div>
+    <%= image_tag "banner.png", :width =>"1366", :height => "106" %>
+  </div>
+</div>

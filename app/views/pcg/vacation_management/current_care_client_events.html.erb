@@ -1,0 +1,78 @@
+<% content_for :calendar_libraries do %>
+  <%= stylesheet_link_tag    "fullcalendar_lib", media: "all", "data-turbolinks-track" => true %>
+<% end %>
+
+
+<%= javascript_include_tag "fullcalendar_lib", "data-turbolinks-track" => true %>
+
+<div id="main-outer-wrapper">
+  <div id="content-block">
+    <div class="breadcrum">
+      <ul>
+        <li><%= link_to "Home",pcg_home_index_path %></li>
+        <li class="greater-than"><%= image_tag "greater-than.png", :width => "4", :height => "7" %></li>
+        <li>Client Calendar</li>
+      </ul>
+    </div>
+    <h3 class="clear">Assigned Events <span class="name">(<%= @care_client.fullname %>)</span></h3>
+    <div>
+      <div class='care_client_calendar'></div>
+    </div>
+  </div>
+</div>
+<div id="event_desc_dialog" class="dialog" style="display:none;"></div>
+<div id="create_event_dialog" class="dialog" style ="display:none;">
+  <%= render 'vacation_request_form' %>
+</div>
+
+<script>
+  $(document).ready(function(){
+
+    var is_darg_or_resize = false;
+
+    var auto_refresh = setInterval(
+            function(){
+              if(!is_darg_or_resize){
+                $('.care_client_calendar').fullCalendar('refetchEvents');
+              }
+            }, 10000);
+
+    full_calendar_options['eventSources'] = [
+    {
+      url: "<%=  pcg_get_current_care_client_events_path  %>",
+      textColor: 'white',
+      editable: false
+    }]
+
+    $('.care_client_calendar').fullCalendar(full_calendar_options);
+    if (typeof(FullcalendarEngine) === 'undefined') { FullcalendarEngine = {}; }
+
+    FullcalendarEngine = {
+      Events: {
+        refetch_events_and_close_dialog: function() {
+          $('#create_event_dialog').html('');
+          $('#edit_event_description').html('');
+          $('#event_desc_dialog').html('');
+          $('.care_client_calendar').fullCalendar('refetchEvents');
+          $('.dialog:visible').dialog('destroy');
+        },
+        showEventDetails: function(event){
+          $('#event_desc_dialog').html('');
+          $('#event_desc_dialog').addClass('event_action_list');
+          $event_description = $('<div />').html(event.description).attr("id", "edit_event_description")
+          $event_actions = $('<div />').attr("id", "event_actions");
+          title = event.title
+          $('#event_desc_dialog').append($event_description).append($event_actions)
+          $('#event_desc_dialog').dialog({
+            title: title,
+            modal: true,
+            width: 500,
+            close: function(event, ui){
+              $('#event_desc_dialog').html('');
+              $('#event_desc_dialog').dialog('destroy') }
+          });
+        }
+      }
+    }
+    });
+</script>

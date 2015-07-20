@@ -1,0 +1,132 @@
+  <%= javascript_include_tag "fcg/fcg_new" %>
+
+  <div id="content-block">
+    <div class="breadcrum">
+      <ul>
+        <li><%= link_to "Home",pcga_home_index_path, :id => "fcg_breadcrum_home_link" %></li>
+        <li class="greater-than"><%= image_tag "greater-than.png", width: "4", height: "7" %></li>
+        <li><%= link_to "Care Clients",fcg_view_care_clients_path, :id => "fcg_breadcrum_link" %></li>
+        <li class="greater-than"><%= image_tag "greater-than.png", :width => "4", :height => "7" %></li>
+        <li>Add Care Client</li>
+      </ul>
+    </div>
+    <h3 class="clear">Add Care Client</h3>
+
+    <h4>Personal Details</h4>
+
+    <%= simple_form_for(@care_client, :url => fcg_home_index_path, method: :post, validate: true) do |f| %>
+      <div class="inputs"> 
+
+        <div class="row">
+          <div class="first-input-box">
+            <p>First Name <span class="mandatory">*</span></p>
+            <%= f.text_field :first_name %>
+          </div>
+          <div class="input-box">
+            <p>Last Name <span class="mandatory">*</span></p>
+            <%= f.text_field :last_name %>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="first-input-box">
+            <p>DOB <span class="mandatory">*</span></p>
+            <%= f.text_field :dob, :id => "datepicker", readonly: true %>
+          </div>
+          <div class="input-box">
+          <p>Gender <span class="mandatory">*</span></p>
+            <fieldset class="radios">
+            <label class="label_radio r_on">
+              <%= f.radio_button :gender, 'Male', :checked => true %>
+              Male</label>
+            <label class="label_radio">
+              <%= f.radio_button :gender, 'Female', :checked => true %>
+              Female</label>
+          </fieldset>
+          </div>
+        </div>
+
+        <div class="row">
+          <%= f.fields_for :user do |user| %>
+            <div class="first-input-box">
+              <p>Email <span class="mandatory">*</span></p>
+              <%= user.text_field :email %>
+            </div>
+          <% end %>
+          <div class="input-box">
+            <p>Telephone <span class="mandatory">*</span></p>
+            <%= f.text_field :telephone, :title => "Please enter phone number (including country code) with no spaces or hyphens. e.g. '+19057076666'" %>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="first-input-box">
+            <p>Mobile <span class="mandatory">*</span></p>
+            <%= f.text_field :mobile_no, :title => "Please enter phone number (including country code) with no spaces or hyphens. e.g. '+19057076666'" %>
+          </div>
+          <div class="input-box">
+            <p>Address 1 <span class="mandatory">*</span></p>
+            <%= f.text_field :address_1 %>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="first-input-box">
+            <p>Address 2</p>
+            <%= f.text_field :address_2 %>
+          </div>
+          <div class="input-box">
+          	<p>Country <span class="mandatory">*</span></p>
+            <%= f.select(:country_id, Country.all.collect {|a| [a.name, a.id]}, {:include_blank => "Please select"},{class: "custom-select country", :id => "country"}) %>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="first-input-box">
+            <p>State <span class="mandatory">*</span></p>
+            <%= f.select(:state_id, State.all.collect {|a| [a.name, a.id]}, {:include_blank => "Please select"},{class: "custom-select", :id => "state"}) %>
+          </div>
+          <div class="input-box">
+            <p>City <span class="mandatory">*</span></p>
+            <%= f.text_field :city %>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="first-input-box">
+            <p>Zip Code <span class="mandatory">*</span></p>
+            <%= f.text_field :zip %>
+          </div>
+          <div class="input-box">
+            <p>Medical Record Number</p>
+            <%= f.text_field :medical_record_number %>
+          </div>
+        </div>
+
+        <div class="row h-btm">
+            <p>Telephony Number</p>
+            <span class="spn-txt">N/A Please Contact HomaCare Admin</span>
+            <div class="note"><span>Note </span>: If this field is blank, must manually call the telephony number</div>
+          </div>
+
+      </div>
+    
+      <div class="row">
+      <p class="footer-note"><span class="mandatory">*</span> Mandatory fields</p>
+        <%= f.submit "Submit", value: "Submit", class: "farCare-btn submit first-btn", :disable_with => 'Submit' %>
+        <%= link_to "Cancel", fcg_view_care_clients_path, class: "farCare-btn cancel", id: "fcg_new_cancel" %>
+      </div>
+    <% end %>
+  </div>
+  
+<script type="text/javascript">
+  $("#datepicker").datepicker({
+    onClose: function(dateText, inst) { $(inst.input).change().focusout(); },
+    changeMonth: true,
+    changeYear: true,
+    dateFormat: 'mm-dd-yy',
+    maxDate : new Date(),
+    yearRange: "-100:+0",
+    showMonthAfterYear : true
+  });
+</script>

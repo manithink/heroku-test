@@ -1,0 +1,250 @@
+<body>
+<div id="main-outer-wrapper"> 
+  <div id="content-block">
+    <div class="breadcrum">
+      <ul>
+        <li><%= link_to "Home",pcga_home_index_path %></li>
+        <li class="greater-than"><%= image_tag "greater-than.png", width: "4", height: "7" %></li>
+        <li><%= link_to "Care Clients",fcg_view_care_clients_path %></li>
+        <li class="greater-than"><%= image_tag "greater-than.png", :width => "4", :height => "7" %></li>
+        <li>Customize Service Plan</li>
+      </ul>
+    </div>
+    
+    <h3 class="clear">Customize Service Plan</h3>
+    <% if @care_clients.blank? %>
+      <div style="margin-top:20px; font-size:14px">No care clients has been found for customization!</div>
+    <% else %>
+    <div class="inputs">
+      <div class="row h-btm">
+        <div class="first-input-box">
+          <p>Choose Care Client</p>
+          <%= select_tag "care_client_id", options_for_select(@care_clients.collect{|x| [(x.first_name+" "+x.last_name),x.id]}) , 
+          prompt: "Please Select",   class: "custom-select", id: "selectCareClient" %>
+        </div>
+        <span style="float: right; margin: 4% 27% 0% 0%;" class="error" >&nbsp;</span>
+      </div>
+      <div class="row"> 
+        <div class="service-section">
+          <p>Choose a Service Category</p>
+          <div id="mcs_container">
+            <div class="customScrollBox">
+              <div class="container">
+                <div class="content">
+                  <ul class="service-lists">
+                    <% @categories.each do |cat|%>
+                      <li  class="category-list" onclick= getServices(<%= cat.id %>,this); ><%= cat.name %></li>
+                    <% end %>
+                      <li  class="category-list" onclick= showAll(this); >Show All</li>             
+                    </ul>
+                </div>
+              </div>
+              <div class="dragger_container">
+                <div class="dragger"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="service-section  fright">
+          <p>Customize Service Items</p>
+          <div id="mcs_container_two" class="choose-category">
+            <div class="service-status"> <span>Required</span> <span>Optional</span> <span class="last">N/A</span> </div>
+            <div class="customScrollBox">
+              <div class="container">
+                <div class="content service-block" id="serviceContent">
+                  <% @categories.each do |cat|%>
+                    <% unless cat.services.blank? %>
+                      <% cat.services.each do |service| %>
+                        <div class="row serviceOf<%= cat.id %>Category toolTip" title="<%= (service.name.length>17) ? 
+                          service.name : '' %>">
+                          <%= service.name.truncate(17) %>
+                          <fieldset class="radios catgry-check">
+                            <label class="label_radio r_on">
+                              <input name="<%= service.name %>" value="<%= service.id %>_required" type="radio">
+                              &nbsp; </label>
+                            <label class="label_radio">
+                              <input name="<%= service.name %>" value="<%= service.id %>_optional" type="radio">
+                              &nbsp; </label>
+                            <label class="label_radio">
+                              <input name="<%= service.name %>" value="<%= service.id %>_N/A" class="last-item" type="radio" checked="">
+                              &nbsp; </label>
+                          </fieldset>
+                        </div>
+                      <% end %>
+                    <% else %>
+                      <div class="row serviceOf<%= cat.id %>Category no-data">No services are available for this category!</div>
+                    <% end %>                    
+                  <% end %>
+                </div>
+              </div>
+              <div class="dragger_container">
+                <div class="dragger"></div>
+              </div>
+            </div>
+          </div>
+        </div> 
+      </div>
+    </div>
+    <% end %>      
+  </div>
+    <% if @care_clients.present? %>
+      <div class="row">
+        <input type="button" value="Save" class="farCare-btn submit first-btn" onclick="saveData();">
+        <!-- <input type="button" value="Cancel" class="farCare-btn cancel"> -->
+        <%= link_to "Cancel",fcg_view_care_clients_path, class: "farCare-btn cancel" %>
+      </div>
+    <% end %>
+  </div>
+    <!--Service section ends here-->
+</body>
+
+<script>
+
+  $(function(){
+    $('.error').empty();
+    setCurrentStatus();
+    var firstID = <%= @categories.first.id if @categories.present? %>
+    getServices(firstID);  
+    mCustomScrollbars();  
+    $('.label_check, .label_radio').click(function(){
+      setupLabel();
+    });  
+    setupLabel();
+    $('.service-lists').children('li').each(function(){
+      $(this).css("color", "#626262");
+    });
+    $('.service-lists').children('li').first().css("color", "#26a7e9" );
+  });
+
+  function showAll(e){
+    $('.service-lists').children('li').each(function(){
+      $(this).css("color", "#626262");
+    });    
+    $(e).css("color", "#26a7e9" );
+    $('#serviceContent').children().show();
+    $('.no-data').hide();
+    mCustomScrollbars();
+  }
+
+  function setCurrentStatus(){
+    $('.customScrollBox , .service-status').hide(); 
+    var data = <%= raw @data.to_json %>
+      if (<%= raw @current_care_client.to_json %>){
+      var care_client = <%= raw @current_care_client.to_json %>;
+      $("#selectCareClient option").each(function(){
+        var self = $(this);
+        if ($(this).val() == care_client.id){
+          $(this).attr("selected","selected");
+          var name = $(this).text().toString();
+          $('.holder').text(name);
+        }
+      });
+      $(data).each(function(){
+        $('input[value="' + this.service_id+'_'+this.option + '"]').attr('checked', true);
+      });
+      setupLabel();
+      $('.customScrollBox , .service-status').show(); 
+    }   
+  }
+
+  $(function(){
+    setConfirm();
+  })
+
+
+  function setupLabel() {
+    if ($('.label_check input').length) {
+        $('.label_check').each(function(){ 
+            $(this).removeClass('c_on');
+        });
+        $('.label_check input:checked').each(function(){ 
+            $(this).parent('label').addClass('c_on');
+        });                
+    };
+    if ($('.label_radio input').length) {
+        $('.label_radio').each(function(){ 
+            $(this).removeClass('r_on');
+        });
+        $('.label_radio input:checked').each(function(){ 
+            $(this).parent('label').addClass('r_on');
+        });
+    }
+  } 
+
+
+  function getCurrentStatus(care_client_id){   
+    if(care_client_id){
+      $("#selectCareClient option").each(function(){
+        var self = $(this);
+        if ($(this).val() == care_client_id){
+          $(this).attr("selected","selected");
+          var name = $(this).text().toString();
+          $('.holder').text(name);
+        }
+      });
+      window.location.href = "/fcg/customize_service_plan/"+care_client_id;
+    } else {
+      window.location.href = "/fcg/customize_service_plan";
+    }  
+    // setCurrentStatus();
+  }
+
+  function mCustomScrollbars(){
+      /* 
+      malihu custom scrollbar function parameters: 
+      1) scroll type (values: "vertical" or "horizontal")
+      2) scroll easing amount (0 for no easing) 
+      3) scroll easing type 
+      4) extra bottom scrolling space for vertical scroll type only (minimum value: 1)
+      5) scrollbar height/width adjustment (values: "auto" or "fixed")
+      6) mouse-wheel support (values: "yes" or "no")
+      7) scrolling via buttons support (values: "yes" or "no")
+      8) buttons scrolling speed (values: 1-20, 1 being the slowest)
+      */
+      $("#mcs_container").mCustomScrollbar("vertical",300,"easeOutCirc",1.05,"auto","yes","yes",15); 
+      $("#mcs_container_two").mCustomScrollbar("vertical",300,"easeOutCirc",1.05,"auto","yes","yes",15); 
+  }
+
+  function getServices(id,e){
+    var Id = id;
+    $('.service-lists').children('li').each(function(){
+      $(this).css("color", "#626262");
+    });
+
+    $(e).css("color", "#26a7e9" );
+    $('#serviceContent').children().hide();
+    $('#serviceContent').find('.serviceOf'+Id+'Category').show();
+    mCustomScrollbars();
+  }
+
+  function saveData(){
+    var care_client_id = $('#selectCareClient').val();
+    if(care_client_id){
+      var array = [];
+      $('input:checked').each(function(){ 
+        array.push($(this).val())
+      })
+      $.ajax({
+        url: '/fcg/save_care_client_services',
+        type: 'POST',
+        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').
+                                    attr('content'));},
+        data:{'contents': array, 'care_client_id': care_client_id},
+      }).done(function(data) {
+        jAlert('info', "Service plan has been saved successfully!", 'Success!');
+      });
+    } else{
+      $('.error').html('Please select a care client!');
+    }
+  }
+
+  function setConfirm(){
+    $("#selectCareClient").change(function(event) {
+      var self = $(this)  
+        getCurrentStatus(self.val());
+    });
+  }
+</script
+</body>
+

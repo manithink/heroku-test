@@ -1,2 +1,0 @@
-module Calendar::CalendarHelper
-end

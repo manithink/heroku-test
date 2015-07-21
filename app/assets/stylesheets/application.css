@@ -5,37 +5,11 @@
  * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
  * or vendor/assets/stylesheets of plugins, if any, can be referenced here using a relative path.
  *
- * You're free to add application-wide styles to this file and they'll appear at the top of the
- * compiled file, but it's generally better to create a new file per style scope.
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any styles
+ * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
+ * file per style scope.
  *
+ *= require_tree .
  *= require_self
- *= require jquery.alerts
- *= require multi-select
- *= require jquery-ui
- *= require flexslider
- *= require accordian
- *= require admin/home
- *= require admin_settings
- *= require calendar/calendar
- *= require calendar/care_client
- *= require care_giver_companies
- *= require checkbox-styles
- *= require confirmations
- *= require custom
- *= require fcg/home
- *= require home
- *= require homes
- *= require jquery.mCustomScrollbar
- *= require jquery.onoff
- *= require mobile/home
- *= require passwords
- *= require pcg/home
- *= require pcga/home
- *= require registrations
- *= require selectbox
- *= require styles
- *= require tinyscrollbar
  */
-
-
-

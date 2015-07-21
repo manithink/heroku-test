@@ -1,2 +1,0 @@
-$('#my-select').multiSelect('select', <%= raw @assigned_care_giver_ids.map(&:to_s) %>);
-$('#my-select').multiSelect('deselect', <%= raw @unassigned_care_giver_ids.map(&:to_s) %>, false);
